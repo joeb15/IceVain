@@ -11,47 +11,9 @@ public class Config {
      * @param   value   The value to set <code>name</code> to in the config file
      * @return          The previous value of <code>name</code> in the config file
      */
-    public static String set(String name, int value){return set(name, value+"");}
-    /**
-     *  Sets the value of a key in the config file and returns the previous value stored.
-     *
-     * @param   name    The name of the variable in the config file
-     * @param   value   The value to set <code>name</code> to in the config file
-     * @return          The previous value of <code>name</code> in the config file
-     */
-    public static String set(String name, long value){return set(name, value+"");}
-    /**
-     *  Sets the value of a key in the config file and returns the previous value stored.
-     *
-     * @param   name    The name of the variable in the config file
-     * @param   value   The value to set <code>name</code> to in the config file
-     * @return          The previous value of <code>name</code> in the config file
-     */
-    public static String set(String name, float value){return set(name, value+"");}
-    /**
-     *  Sets the value of a key in the config file and returns the previous value stored.
-     *
-     * @param   name    The name of the variable in the config file
-     * @param   value   The value to set <code>name</code> to in the config file
-     * @return          The previous value of <code>name</code> in the config file
-     */
-    public static String set(String name, double value){return set(name, value+"");}
-    /**
-     *  Sets the value of a key in the config file and returns the previous value stored.
-     *
-     * @param   name    The name of the variable in the config file
-     * @param   value   The value to set <code>name</code> to in the config file
-     * @return          The previous value of <code>name</code> in the config file
-     */
-    public static String set(String name, short value){return set(name, value+"");}
-    /**
-     *  Sets the value of a key in the config file and returns the previous value stored.
-     *
-     * @param   name    The name of the variable in the config file
-     * @param   value   The value to set <code>name</code> to in the config file
-     * @return          The previous value of <code>name</code> in the config file
-     */
-    public static String set(String name, byte value){return set(name, value+"");}
+    public static String set(String name, Object value){
+        return set(name, value.toString());
+    }
 
     public static String set(String name, String value){
         try {
