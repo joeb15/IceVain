@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" serverName="IceVain" uploadOnCheckin="bc61f699-727b-4bc7-8683-7ff43d39f8be">
+    <serverData>
+      <paths name="IceVain">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$/Server" web="/" />
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+    <option name="myUploadOnCheckinName" value="IceVain" />
+  </component>
+</project>
