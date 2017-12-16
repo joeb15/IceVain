@@ -1,23 +1,46 @@
-import com.sun.security.auth.module.NTSystem;
-import engine.utils.Config;
-import engine.utils.Debug;
-import engine.utils.GlobalVars;
-import engine.utils.VFS;
+import engine.utils.*;
 
-import java.net.InetAddress;
+import static engine.utils.GlobalVars.CFG_FPS_MAX;
 
 public class Client {
 
+    private int fps=0,tps=0;
+
     public Client(){
-        VFS.createVFS(GlobalVars.GAME_FOLDER, "/");
+        initialize();
 
         Debug.error("Config file has been loaded from:");
         Debug.error(VFS.getFile(GlobalVars.CONFIG_FILE).getPath());
 
-        Debug.log(GlobalVars.getGameNameAndVersion());
-        Debug.log(Config.getInt("max_fps"));
+        Timer.createTimer(()->{tps++;tick();}, 1000.0/60, -1);
+        Timer.createTimer(()->{fps++;render();}, 1000.0/Config.getInt(CFG_FPS_MAX), -1);
+        Timer.createTimer(()->{
+            Debug.log("FPS:"+fps+" TPS:"+tps);
+            fps=0;tps=0;
+        }, 1000, -1);
 
-        Debug.log(VFS.getFile("/config.cfg").getPath());
+        int i=0;
+        while(1>i){
+            Timer.tick();
+        }
+
+        cleanUp();
+    }
+
+    private void render(){
+
+    }
+
+    private void tick(){
+
+    }
+
+    private void initialize(){
+        VFS.initializeVirtualSystems();
+    }
+
+    private void cleanUp(){
+
     }
 
     public static void main(String args[]){
