@@ -33,7 +33,7 @@ public class VFS {
         }
         URL url = classLoader.getResource(path);
         if(url==null){
-            return null;
+            return absoluteFile;
         }
         return new File(url.getFile());
     }
@@ -50,4 +50,34 @@ public class VFS {
         virtualSystems.get(virtualPath).add(path);
     }
 
+    /**
+     * Determines whether a file exists or not
+     *
+     * @param   path    The path of the file to be checked
+     * @return          Whether or not the specified file exists within the virtual file system
+     */
+    public static boolean fileExists(String path){
+        File f = getFile(path);
+        return f!=null && f.exists() && !f.isDirectory();
+    }
+
+    /**
+     * Determines whether a folder exists or not
+     *
+     * @param   path    The path of the folder to be checked
+     * @return          Whether or not the specified folder exists within the virtual file system
+     */
+    public static boolean folderExists(String path){
+        File f = getFile(path);
+        return f!=null && f.exists() && f.isDirectory();
+    }
+
+    /**
+     * Initializes the virtual systems that are built in to the game
+     * Called upon startup
+     */
+    public static void initializeVirtualSystems() {
+        VFS.createVFS(GlobalVars.GAME_FOLDER, "/");
+
+    }
 }
