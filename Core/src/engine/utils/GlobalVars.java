@@ -16,6 +16,7 @@ public class GlobalVars {
     public static final String CFG_FPS_MAX = "max_fps";
     public static final String CFG_FRAME_WIDTH = "window_width";
     public static final String CFG_FRAME_HEIGHT = "window_height";
+    public static final String CFG_FRAME_FULLSCREEN = "window_fullscreen";
 
     /**
      * A simple function to combine the game's name and version
