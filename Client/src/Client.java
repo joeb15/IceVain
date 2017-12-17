@@ -27,7 +27,6 @@ public class Client {
 
         int i=0;
         while(!window.shouldClose()){
-            glfwPollEvents();
             Timer.tick();
         }
 
@@ -41,11 +40,13 @@ public class Client {
     }
 
     private void tick(){
-
+        glfwPollEvents();
+        Keyboard.tick();
     }
 
     private void initialize(){
         VFS.initializeVirtualSystems();
+        Keyboard.initializeKeyboardConfig();
         if(!glfwInit()){
             throw new IllegalStateException("Failed to initialize GLFW");
         }

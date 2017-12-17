@@ -2,6 +2,7 @@ package engine.render;
 
 import engine.utils.Config;
 import engine.utils.GlobalVars;
+import engine.utils.Keyboard;
 import org.lwjgl.glfw.GLFWVidMode;
 
 import static engine.utils.GlobalVars.*;
@@ -39,10 +40,12 @@ public class Window {
         glfwSwapInterval(0);
 
         createCapabilities();
+
+        Keyboard.focus(this);
     }
 
     /**
-     * Simple getter method to see if the window should close or not (The X has been clicked)
+     * Getter method to see if the window should close or not (The X has been clicked)
      *
      * @return Whether or not the window should close
      */
@@ -51,9 +54,26 @@ public class Window {
     }
 
     /**
-     * Simple accessor method to swap the buffers for the window
+     * Accessor method to swap the buffers for the window
      */
     public void swapBuffers() {
         glfwSwapBuffers(window);
+    }
+
+    /**
+     * Accessor method to see if the key is pressed or not
+     *
+     * @param key The keycode
+     * @return Whether or not the key is down or not
+     */
+    public boolean isKeyDown(int key) {
+        return glfwGetKey(window, key)==GLFW_TRUE;
+    }
+
+    /**
+     * Accessor method to close the window on request
+     */
+    public void close() {
+        glfwSetWindowShouldClose(window, true);
     }
 }

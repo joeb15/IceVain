@@ -18,6 +18,12 @@ public class GlobalVars {
     public static final String CFG_FRAME_HEIGHT = "window_height";
     public static final String CFG_FRAME_FULLSCREEN = "window_fullscreen";
 
+    public static final String CFG_CONTROL_FORWARD = "control_forward";
+    public static final String CFG_CONTROL_BACK = "control_back";
+    public static final String CFG_CONTROL_LEFT = "control_left";
+    public static final String CFG_CONTROL_RIGHT = "control_right";
+    public static final String CFG_CONTROL_EXIT = "control_exit";
+
     /**
      * A simple function to combine the game's name and version
      *
