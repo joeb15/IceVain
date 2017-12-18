@@ -3,8 +3,7 @@ import engine.utils.*;
 
 import static engine.utils.GlobalVars.CFG_FPS_MAX;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.*;
 
 public class Client {
 
@@ -50,6 +49,7 @@ public class Client {
         if(!glfwInit()){
             throw new IllegalStateException("Failed to initialize GLFW");
         }
+        glEnable(GL_TEXTURE_2D);
         window = new Window();
 
     }
