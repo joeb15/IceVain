@@ -13,16 +13,9 @@ public class Model {
     private int drawCount;
     private int vertexId, textureId, indexId;
 
-    private static float[] vertices = new float[]{
-            -.5f,.5f,.5f,.5f,.5f,-.5f,-.5f,-.5f
-    };
-
-    private static float[] texture = new float[]{
-            0,0,1,0,1,1,0,1
-    };
-    private static int[] indices = new int[]{
-            0,1,2,2,3,0
-    };
+    private static float[] vertices = new float[]{-.5f,.5f,0,.5f,.5f,0,.5f,-.5f,0,-.5f,-.5f,0};
+    private static float[] texture = new float[]{0,0,1,0,1,1,0,1};
+    private static int[] indices = new int[]{0,1,2,2,3,0};
 
     public Model(){
         this(vertices, texture, indices);
@@ -47,6 +40,12 @@ public class Model {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
+    /**
+     * Creates a <code>FloatBuffer</code> from a given float array and flips it
+     *
+     * @param floats The float[] to put into the buffer
+     * @return The <code>FloatBuffer</code> that is created from the array
+     */
     private FloatBuffer createBuffer(float[] floats) {
         FloatBuffer floatBuffer = BufferUtils.createFloatBuffer(floats.length);
         floatBuffer.put(floats);
@@ -54,6 +53,12 @@ public class Model {
         return floatBuffer;
     }
 
+    /**
+     * Creates a <code>IntBuffer</code> from a given integer array and flips it
+     *
+     * @param ints The int[] to put into the buffer
+     * @return The <code>IntBuffer</code> that is created from the array
+     */
     private IntBuffer createBuffer(int[] ints) {
         IntBuffer intBuffer = BufferUtils.createIntBuffer(ints.length);
         intBuffer.put(ints);
@@ -61,21 +66,30 @@ public class Model {
         return intBuffer;
     }
 
+    /**
+     * Binds the model to the openGL rendering pipeline
+     */
     public void bind(){
         glEnableClientState(GL_VERTEX_ARRAY);
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
         glBindBuffer(GL_ARRAY_BUFFER, vertexId);
-        glVertexPointer(2, GL_FLOAT, 0, 0);
+        glVertexPointer(3, GL_FLOAT, 0, 0);
         glBindBuffer(GL_ARRAY_BUFFER, textureId);
         glTexCoordPointer(2, GL_FLOAT, 0, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexId);
     }
 
+    /**
+     * Renders an instance of the model
+     */
     public void render(){
         glDrawElements(GL_TRIANGLES, drawCount, GL_UNSIGNED_INT, 0);
     }
 
+    /**
+     * Unbinds all references to this model from the openGL pipeline
+     */
     public void unbind(){
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);

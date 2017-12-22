@@ -15,6 +15,13 @@ public class Config {
         return set(name, value.toString());
     }
 
+    /**
+     *  Sets the value of a key in the config file and returns the previous value stored.
+     *
+     * @param   name    The name of the variable in the config file
+     * @param   value   The value to set <code>name</code> to in the config file
+     * @return          The previous value of <code>name</code> in the config file
+     */
     public static String set(String name, String value){
         try {
             //Open file and find if value exists in the file

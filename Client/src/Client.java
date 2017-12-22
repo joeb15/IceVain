@@ -32,6 +32,9 @@ public class Client {
         cleanUp();
     }
 
+    /**
+     * The main render loop of the game
+     */
     private void render(){
         glClear(GL_COLOR_BUFFER_BIT);
         texture.bind();
@@ -42,11 +45,17 @@ public class Client {
         window.swapBuffers();
     }
 
+    /**
+     * The main logic loop of the game
+     */
     private void tick(){
         glfwPollEvents();
         Keyboard.tick();
     }
 
+    /**
+     * Initializes all of the variables and openGL and GLFW methods
+     */
     private void initialize(){
         VFS.initializeVirtualSystems();
         Keyboard.initializeKeyboardConfig();
@@ -62,6 +71,9 @@ public class Client {
 
     }
 
+    /**
+     * Frees all the bindings from openGL
+     */
     private void cleanUp(){
         glfwTerminate();
     }
