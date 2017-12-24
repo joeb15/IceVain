@@ -47,6 +47,9 @@ public class OBJLoader {
                 }
             }
 
+            if(currObject!=null)
+                objObjects.put(currObject.name, currObject);
+
             for(OBJObject objObject:objObjects.values()){
                 float[] vertices = new float[objObject.vertices.size()*3];
                 int[] indices = new int[objObject.indicies.size()];
