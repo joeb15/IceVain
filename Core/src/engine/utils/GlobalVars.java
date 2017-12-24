@@ -1,7 +1,8 @@
 package engine.utils;
 
 public class GlobalVars {
-    public static final String GAME_FOLDER = "C:\\Program Files\\Kore Studios\\Ice Vain\\";
+    //TODO:CHANGE THIS TO BE MODULAR PER USER
+    public static final String GAME_FOLDER = "C:/Users/joeba/AppData/Roaming/Kore Studios/Ice Vain/";
     public static final String CONFIG_FILE = "/config.cfg";
 
     public static final String GAME_NAME = "Ice Vain";

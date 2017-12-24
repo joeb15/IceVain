@@ -1,36 +1,33 @@
+import engine.render.Model;
 import engine.render.Texture;
 import engine.render.Window;
-import engine.render.shaders.Shader;
-import engine.utils.*;
-import engine.utils.modelLoader.MaterialModelGroup;
+import engine.utils.Keyboard;
+import engine.utils.VFS;
 import engine.utils.modelLoader.OBJLoader;
 
-import static engine.utils.GlobalVars.CFG_FPS_MAX;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 
-public class Client {
+public class Testing {
 
     private int fps=0,tps=0;
 
     private Window window;
-    private static MaterialModelGroup model;
+    private static Model model;
     private static Texture texture;
-    private static Shader shader;
 
-    public Client(){
+    public Testing(){
         initialize();
 
-        Debug.error("Config file has been loaded from:");
-        Debug.error(VFS.getFile(GlobalVars.CONFIG_FILE).getPath());
+        OBJLoader.loadOBJ(VFS.getFile("/lowpolytree.obj"));
 
-        Timer.createTimer(()->{tps++;tick();}, 1000.0/60, -1);
-        Timer.createTimer(()->{fps++;render();}, 1000.0/Config.getInt(CFG_FPS_MAX), -1);
-        Timer.createTimer(()->{Debug.log("FPS:"+fps+" TPS:"+tps);fps=0;tps=0;}, 1000, -1);
-
-        while(!window.shouldClose()){
-            Timer.tick();
-        }
+//        Timer.createTimer(()->{tps++;tick();}, 1000.0/60, -1);
+//        Timer.createTimer(()->{fps++;render();}, 1000.0/ Config.getInt(CFG_FPS_MAX), -1);
+//        Timer.createTimer(()->{Debug.log("FPS:"+fps+" TPS:"+tps);fps=0;tps=0;}, 1000, -1);
+//
+//        while(!window.shouldClose()){
+//            Timer.tick();
+//        }
 
         cleanUp();
     }
@@ -40,9 +37,11 @@ public class Client {
      */
     private void render(){
         glClear(GL_COLOR_BUFFER_BIT);
-        shader.bind();
+        texture.bind();
+        model.bind();
         model.render();
-        shader.unbind();
+        model.unbind();
+        texture.unbind();
         window.swapBuffers();
     }
 
@@ -68,8 +67,7 @@ public class Client {
         glEnable(GL_TEXTURE_2D);
 
         texture = new Texture("/resources/muffin.jpg");
-        shader = new Shader(VFS.getFile("/shaders/default.vert"),VFS.getFile("/shaders/default.frag"));
-        model = OBJLoader.loadOBJ(VFS.getFile("/lowpolytree.obj"));
+        model = new Model();
 
     }
 
@@ -81,6 +79,6 @@ public class Client {
     }
 
     public static void main(String args[]){
-        new Client();
+        new Testing();
     }
 }

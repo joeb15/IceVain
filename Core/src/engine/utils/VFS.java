@@ -23,7 +23,7 @@ public class VFS {
         for(String virtualPath:virtualSystems.keySet()){
             if(path.startsWith(virtualPath)){
                 for(String realPath:virtualSystems.get(virtualPath)){
-                    String newPath = path.replace(virtualPath, realPath);
+                    String newPath = path.replaceFirst(virtualPath, realPath);
                     File f = getFile(newPath);
                     if(f != null) {
                         return f;

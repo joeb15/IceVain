@@ -10,8 +10,8 @@ import static org.lwjgl.opengl.GL15.*;
 
 public class Model {
 
-    private int drawCount;
-    private int vertexId, textureId, indexId;
+    protected int drawCount;
+    protected int vertexId, textureId, indexId;
 
     private static float[] vertices = new float[]{-.5f,.5f,0,.5f,.5f,0,.5f,-.5f,0,-.5f,-.5f,0};
     private static float[] texture = new float[]{0,0,1,0,1,1,0,1};
@@ -46,7 +46,7 @@ public class Model {
      * @param floats The float[] to put into the buffer
      * @return The <code>FloatBuffer</code> that is created from the array
      */
-    private FloatBuffer createBuffer(float[] floats) {
+    protected FloatBuffer createBuffer(float[] floats) {
         FloatBuffer floatBuffer = BufferUtils.createFloatBuffer(floats.length);
         floatBuffer.put(floats);
         floatBuffer.flip();
@@ -59,7 +59,7 @@ public class Model {
      * @param ints The int[] to put into the buffer
      * @return The <code>IntBuffer</code> that is created from the array
      */
-    private IntBuffer createBuffer(int[] ints) {
+    protected IntBuffer createBuffer(int[] ints) {
         IntBuffer intBuffer = BufferUtils.createIntBuffer(ints.length);
         intBuffer.put(ints);
         intBuffer.flip();
