@@ -1,4 +1,4 @@
-package engine.render;
+package engine.render.textures;
 
 import engine.utils.VFS;
 import org.lwjgl.BufferUtils;
@@ -8,10 +8,15 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
+import static org.lwjgl.opengles.GLES20.GL_TEXTURE0;
 
 public class Texture {
+
+    private static ArrayList<Integer> textures = new ArrayList<>();
 
     private int id, width, height;
 
@@ -37,6 +42,7 @@ public class Texture {
             }
             byteBuffer.flip();
             id = glGenTextures();
+            textures.add(id);
             glBindTexture(GL_TEXTURE_2D, id);
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -47,10 +53,16 @@ public class Texture {
         }
     }
 
+    public void cleanUp(){
+        for(int i:textures)
+            glDeleteTextures(i);
+    }
+
     /**
      * Binds the texture
      */
-    public void bind(){
+    public void bind(int slot){
+        glActiveTexture(GL_TEXTURE0+slot);
         glBindTexture(GL_TEXTURE_2D, id);
     }
 

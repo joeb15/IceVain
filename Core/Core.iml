@@ -9,5 +9,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="LWJGL3" level="application" />
+    <orderEntry type="library" name="jars" level="application" />
   </component>
 </module>

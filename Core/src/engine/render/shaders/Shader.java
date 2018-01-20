@@ -7,7 +7,7 @@ import java.io.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengles.GLES20.GL_TRUE;
 
-public class Shader {
+public abstract class Shader {
 
     private int program;
     private int vert, frag;
@@ -34,8 +34,7 @@ public class Shader {
         glAttachShader(program, vert);
         glAttachShader(program, frag);
 
-        glBindAttribLocation(program, 0, "position");
-        glBindAttribLocation(program, 1, "material");
+        bindAttributes();
 
         glLinkProgram(program);
         if(glGetProgrami(program, GL_LINK_STATUS)!=1){
@@ -48,6 +47,16 @@ public class Shader {
             Debug.error(glGetProgramInfoLog(program));
             System.exit(1);
         }
+
+        getUniformLocations();
+    }
+
+    public abstract void getUniformLocations();
+
+    public abstract void bindAttributes();
+
+    public void bindAttribute(int index, String name){
+        glBindAttribLocation(program, index, name);
     }
 
     public void bind(){
@@ -56,6 +65,15 @@ public class Shader {
 
     public void unbind(){
         glUseProgram(0);
+    }
+
+    public void cleanUp(){
+        unbind();
+        glDetachShader(program, vert);
+        glDetachShader(program, frag);
+        glDeleteShader(vert);
+        glDeleteShader(frag);
+        glDeleteProgram(program);
     }
 
     private String readFile(File file){
@@ -75,4 +93,8 @@ public class Shader {
         return stringBuilder.toString();
     }
 
+    public Uniform getUniform(String name) {
+        int location = glGetUniformLocation(program, name);
+        return new Uniform(location);
+    }
 }
