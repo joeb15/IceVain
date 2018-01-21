@@ -1,5 +1,7 @@
 package engine.utils;
 
+import com.sun.security.auth.module.NTSystem;
+
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -24,7 +26,7 @@ public class VFS {
             if(path.startsWith(virtualPath)){
                 for(String realPath:virtualSystems.get(virtualPath)){
                     String newPath = path.replaceFirst(virtualPath, realPath);
-                    File f = getFile(newPath);
+                    File f = getFile(GlobalVars.getString(newPath));
                     if(f != null) {
                         return f;
                     }
@@ -77,7 +79,10 @@ public class VFS {
      * Called upon startup
      */
     public static void initializeVirtualSystems() {
+        NTSystem NTSystem = new NTSystem();
         VFS.createVFS(GlobalVars.GAME_FOLDER, "/");
+        GlobalVars.writeVariable("USERNAME", NTSystem.getName());
+        GlobalVars.writeVariable("COMPUTER_NAME", NTSystem.getDomain());
 
     }
 }

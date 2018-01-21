@@ -8,7 +8,7 @@ public class Debug {
      * @param   message The message to be displayed
      */
     public static void log(Object message){
-        System.out.println(message.toString());
+        System.out.println(GlobalVars.getString(message.toString()));
     }
 
     /**
@@ -17,6 +17,6 @@ public class Debug {
      * @param   message The error message to be displayed
      */
     public static void error(Object message){
-        System.err.println(message.toString());
+        System.err.println(GlobalVars.getString(message.toString()));
     }
 }

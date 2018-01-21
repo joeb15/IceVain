@@ -55,28 +55,28 @@ public class Camera {
     public void moveForward() {
         float amtX = (float) (Math.sin(yaw*degToRad) * Math.cos(pitch*degToRad));
         float amtZ = (float) (Math.cos(yaw*degToRad) * Math.cos(pitch*degToRad));
-        float amtY = (float) Math.sin(pitch*degToRad);
+        float amtY = (float) -Math.sin(pitch*degToRad);
         position.add(speed*amtX, speed*amtY, speed*amtZ);
     }
 
     public void moveBackward() {
         float amtX = (float) (Math.sin(yaw*degToRad) * Math.cos(pitch*degToRad));
         float amtZ = (float) (Math.cos(yaw*degToRad) * Math.cos(pitch*degToRad));
-        float amtY = (float) Math.sin(pitch*degToRad);
+        float amtY = (float) -Math.sin(pitch*degToRad);
         position.add(speed*-amtX, speed*-amtY, speed*-amtZ);
     }
 
     public void strafeLeft() {
         float amtX = (float) (Math.sin((yaw-90)*degToRad) * Math.cos(pitch*degToRad));
         float amtZ = (float) (Math.cos((yaw-90)*degToRad) * Math.cos(pitch*degToRad));
-        float amtY = (float) Math.sin(pitch*degToRad);
+        float amtY = (float) -Math.sin(pitch*degToRad);
         position.add(speed*-amtX, speed*-amtY, speed*-amtZ);
     }
 
     public void strafeRight() {
         float amtX = (float) (Math.sin((yaw-90)*degToRad) * Math.cos(pitch*degToRad));
         float amtZ = (float) (Math.cos((yaw-90)*degToRad) * Math.cos(pitch*degToRad));
-        float amtY = (float) Math.sin(pitch*degToRad);
+        float amtY = (float) -Math.sin(pitch*degToRad);
         position.add(speed*amtX, speed*amtY, speed*amtZ);
     }
 }

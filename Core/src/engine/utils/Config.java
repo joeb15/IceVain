@@ -157,4 +157,24 @@ public class Config {
         }
         return null;
     }
+
+    /**
+     * Loads all variables from the configuration file
+     */
+    public static void loadVariables() {
+        BufferedReader reader = getReader(GlobalVars.CONFIG_FILE);
+        String line;
+        try {
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("=");
+                if(parts[0].trim().startsWith("~")){
+                    Debug.error("Variable "+parts[0].trim().replace("~","")+" has been loaded from config");
+                    GlobalVars.setVariable(parts[0].trim().replace("~", ""), parts[1].trim());
+                }
+            }
+            reader.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
 }
