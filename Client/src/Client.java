@@ -54,9 +54,9 @@ public class Client {
                 new float[]{0,0,0,1,1,1,1,0},
                 new int[]{0,1,3,3,1,2});
         TexturedModel texturedModel = new TexturedModel(model, modelTexture);
-        for(int i=0;i<10;i++){
+        for(int i=0;i<10000;i++){
             world.addEntity(new Entity(texturedModel,
-                    new Vector3f((float) (Math.random()*10-5),(float) (Math.random()*10-5),(float) (Math.random()*10-5)),
+                    new Vector3f((float) (Math.random()*100-50),(float) (Math.random()*100-50),(float) (Math.random()*100-50)),
                     new Vector3f((float) (Math.random()*360),(float) (Math.random()*360),(float) (Math.random()*360)),
                     new Vector3f((float) (Math.random()*5),(float) (Math.random()*5),(float) (Math.random()*5))));
         }
@@ -81,6 +81,7 @@ public class Client {
         world = new World();
         addEntities();
         renderer = new MasterRenderer(window, camera, world);
+        tick();
     }
 
     /**
@@ -88,6 +89,7 @@ public class Client {
      */
     private void cleanUp(){
         Loader.cleanUp();
+        renderer.cleanUp();
         glfwTerminate();
     }
 
