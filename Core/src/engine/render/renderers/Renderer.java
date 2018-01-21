@@ -25,6 +25,10 @@ public class Renderer {
     public Renderer(World world, Camera camera){
         this.camera = camera;
         shader = new DefaultShader();
+        shader.bind();
+        shader.loadProjectionMatrix(camera);
+        shader.loadTexture();
+        shader.unbind();
         this.world=world;
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
@@ -54,20 +58,19 @@ public class Renderer {
 
     public void renderEntities(){
         shader.loadViewMatrix(camera);
-        shader.loadTexture();
 
         for(TexturedModel texturedModel : entityHashMap.keySet()){
             RawModel model = texturedModel.getModel();
             glBindVertexArray(model.getVaoId());
-            glEnableVertexAttribArray(0);
-            glEnableVertexAttribArray(1);
+            for(int i:shader.attribs)
+                glEnableVertexAttribArray(i);
             texturedModel.getTexture().getTexture().bind(0);
             for(Entity entity:entityHashMap.get(texturedModel)) {
                 shader.loadTransformationMatrix(entity.getTransformationMatrix());
                 glDrawElements(GL_TRIANGLES, model.getVertexCount(), GL_UNSIGNED_INT, 0);
             }
-            glDisableVertexAttribArray(1);
-            glDisableVertexAttribArray(0);
+            for(int i:shader.attribs)
+                glDisableVertexAttribArray(i);
             glBindVertexArray(0);
         }
 

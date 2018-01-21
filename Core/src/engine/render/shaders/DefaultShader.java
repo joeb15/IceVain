@@ -16,9 +16,11 @@ public class DefaultShader extends Shader{
         this.transformationMatrix.loadMatrix(transformationMatrix);
     }
 
+    public void loadProjectionMatrix(Camera camera){
+        this.projectionMatrix.loadMatrix(camera.getProjection());
+    }
     public void loadViewMatrix(Camera camera){
         this.viewMatrix.loadMatrix(camera.getViewMatrix());
-        this.projectionMatrix.loadMatrix(camera.getProjection());
     }
 
     public void loadTexture(){

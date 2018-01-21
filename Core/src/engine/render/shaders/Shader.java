@@ -3,6 +3,7 @@ package engine.render.shaders;
 import engine.utils.Debug;
 
 import java.io.*;
+import java.util.ArrayList;
 
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengles.GLES20.GL_TRUE;
@@ -11,6 +12,8 @@ public abstract class Shader {
 
     private int program;
     private int vert, frag;
+
+    public ArrayList<Integer> attribs = new ArrayList<>();
 
     public Shader(File vertexShader, File fragmentShader){
         program = glCreateProgram();
@@ -56,6 +59,7 @@ public abstract class Shader {
     public abstract void bindAttributes();
 
     public void bindAttribute(int index, String name){
+        attribs.add(index);
         glBindAttribLocation(program, index, name);
     }
 
