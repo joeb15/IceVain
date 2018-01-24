@@ -1,6 +1,7 @@
 import engine.entities.Entity;
 import engine.physics.World;
 import engine.render.Window;
+import engine.render.models.OBJLoader;
 import engine.render.models.RawModel;
 import engine.render.models.TexturedModel;
 import engine.render.renderers.MasterRenderer;
@@ -48,18 +49,24 @@ public class Client {
      * Adds random entities to the world for testing
      */
     private void addEntities(){
-        ModelTexture modelTexture = new ModelTexture(new Texture("/resources/muffin.jpeg"));
-        RawModel model = Loader.loadToVAO(
+        ModelTexture modelTexture1 = new ModelTexture(new Texture("/resources/muffin.jpeg"));
+        RawModel model1 = Loader.loadToVAO(
                 new float[]{-.5f, .5f, 0,-.5f, -.5f, 0,.5f, -.5f, 0,.5f, .5f, 0},
                 new float[]{0,0,0,1,1,1,1,0},
                 new int[]{0,1,3,3,1,2});
-        TexturedModel texturedModel = new TexturedModel(model, modelTexture);
-        for(int i=0;i<10000;i++){
-            world.addEntity(new Entity(texturedModel,
-                    new Vector3f((float) (Math.random()*100-50),(float) (Math.random()*100-50),(float) (Math.random()*100-50)),
-                    new Vector3f((float) (Math.random()*360),(float) (Math.random()*360),(float) (Math.random()*360)),
-                    new Vector3f((float) (Math.random()*5),(float) (Math.random()*5),(float) (Math.random()*5))));
-        }
+        TexturedModel texturedModel1 = new TexturedModel(model1, modelTexture1);
+
+        ModelTexture modelTexture2 = new ModelTexture(new Texture("/resources/stallTexture.png"));
+        RawModel model2 = OBJLoader.loadModel("/resources/stall.obj");
+        TexturedModel texturedModel2 = new TexturedModel(model2, modelTexture2);
+
+        Entity stall = new Entity(texturedModel2, new Vector3f(), new Vector3f(), new Vector3f(1,1,1));
+
+        world.addEntity(stall);
+        Timer.createTimer(()->{
+            stall.setRotation(0, Timer.getTime(), 0);
+            stall.setPos(0, (float)(-2.5+Math.sin(Timer.getTime()*1.246)), -20);
+            }, 1000/60f, -1);
     }
 
     /**

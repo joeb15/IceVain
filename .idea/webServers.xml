@@ -2,8 +2,8 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="bc61f699-727b-4bc7-8683-7ff43d39f8be" name="IceVain" url="https://github.com/joeb15/IceVain.git">
-        <fileTransfer host="https://github.com/joeb15/IceVain.git" port="21">
+      <webServer id="bc61f699-727b-4bc7-8683-7ff43d39f8be" name="IceVain" url="http://github.com/joeb15/IceVain">
+        <fileTransfer host="github.com/joeb15/IceVain" port="21">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" />
           </advancedOptions>
