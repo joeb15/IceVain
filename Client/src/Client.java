@@ -1,6 +1,9 @@
 import engine.entities.Entity;
+import engine.entities.Light;
 import engine.physics.World;
 import engine.render.Window;
+import engine.render.guis.Gui;
+import engine.render.guis.GuiManager;
 import engine.render.models.OBJLoader;
 import engine.render.models.RawModel;
 import engine.render.models.TexturedModel;
@@ -22,6 +25,7 @@ public class Client {
     private Camera camera;
     private World world;
     private MasterRenderer renderer;
+    private GuiManager guiManager;
 
     public Client(){
         initialize();
@@ -49,24 +53,29 @@ public class Client {
      * Adds random entities to the world for testing
      */
     private void addEntities(){
-        ModelTexture modelTexture1 = new ModelTexture(new Texture("/resources/muffin.jpeg"));
-        RawModel model1 = Loader.loadToVAO(
-                new float[]{-.5f, .5f, 0,-.5f, -.5f, 0,.5f, -.5f, 0,.5f, .5f, 0},
-                new float[]{0,0,0,1,1,1,1,0},
-                new int[]{0,1,3,3,1,2});
-        TexturedModel texturedModel1 = new TexturedModel(model1, modelTexture1);
-
         ModelTexture modelTexture2 = new ModelTexture(new Texture("/resources/stallTexture.png"));
         RawModel model2 = OBJLoader.loadModel("/resources/stall.obj");
         TexturedModel texturedModel2 = new TexturedModel(model2, modelTexture2);
 
         Entity stall = new Entity(texturedModel2, new Vector3f(), new Vector3f(), new Vector3f(1,1,1));
+        Entity stall2 = new Entity(texturedModel2, new Vector3f(), new Vector3f(), new Vector3f(1,1,1));
 
         world.addEntity(stall);
+        world.addEntity(stall2);
         Timer.createTimer(()->{
-            stall.setRotation(0, Timer.getTime(), 0);
-            stall.setPos(0, (float)(-2.5+Math.sin(Timer.getTime()*1.246)), -20);
-            }, 1000/60f, -1);
+            stall.setRotation(0, -Timer.getTime(), 0);
+            stall.setPos(-6, (float)(-2.5+Math.sin(Timer.getTime()*1.246)), -20);
+            stall2.setRotation(0, Timer.getTime(), 0);
+            stall2.setPos(6, (float)(-2.5-Math.sin(Timer.getTime()*1.246)), -20);
+        }, 1000/60f, -1);
+        world.addLight(new Light(new Vector3f(0, 0, 0), new Vector3f(1,1,1), new Vector3f(1,-.1f,0)));
+    }
+
+    private void addGuis(){
+        ModelTexture modelTexture = new ModelTexture(new Texture("/resource/muffin.jpeg"));
+        RawModel model = Loader.loadToVAO(new float[]{-.5f,.5f,0,.5f,.5f,0,-.5f,-.5f, 0, .5f, -.5f,0},new float[]{0,0,1,0,0,1,0,0,1,0,0,1},new float[]{0,0,1,0,0,1,1,1},new int[]{0,1,2,2,1,3});
+        TexturedModel texturedModel = new TexturedModel(model, modelTexture);
+        guiManager.addGui(new Gui(texturedModel, 0,0,100,100));
     }
 
     /**
@@ -86,7 +95,9 @@ public class Client {
         glEnable(GL_TEXTURE_2D);
         glEnable(GL_DEPTH_TEST);
         world = new World();
+        guiManager = new GuiManager();
         addEntities();
+        addGuis();
         renderer = new MasterRenderer(window, camera, world);
         tick();
     }

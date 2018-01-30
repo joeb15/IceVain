@@ -6,6 +6,7 @@ import engine.render.models.RawModel;
 import engine.render.models.TexturedModel;
 import engine.render.shaders.DefaultShader;
 import engine.utils.Camera;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +33,6 @@ public class Renderer {
         this.world=world;
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
-//        model = Loader.loadOBJ(VFS.getFile("/lowpolytree.obj"));
     }
 
     public void render(){
@@ -58,7 +58,8 @@ public class Renderer {
 
     public void renderEntities(){
         shader.loadViewMatrix(camera);
-
+        shader.loadAmbient(new Vector3f(.1f,.1f,.1f));
+        shader.loadLights(world.getLights());
         for(TexturedModel texturedModel : entityHashMap.keySet()){
             RawModel model = texturedModel.getModel();
             glBindVertexArray(model.getVaoId());

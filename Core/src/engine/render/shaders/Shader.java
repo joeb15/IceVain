@@ -101,4 +101,12 @@ public abstract class Shader {
         int location = glGetUniformLocation(program, name);
         return new Uniform(location);
     }
+
+    public UniformStruct getUniform(String name, String ... properties){
+        int[] locations = new int[properties.length];
+        for(int i=0;i<locations.length;i++){
+            locations[i]=glGetUniformLocation(program,name+"."+properties[i]);
+        }
+        return new UniformStruct(locations);
+    }
 }
