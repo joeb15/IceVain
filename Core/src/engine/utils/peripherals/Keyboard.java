@@ -1,6 +1,8 @@
-package engine.utils;
+package engine.utils.peripherals;
 
 import engine.render.Window;
+import engine.utils.Camera;
+import engine.utils.Config;
 
 import java.util.ArrayList;
 import java.util.HashMap;

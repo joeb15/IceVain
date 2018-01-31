@@ -4,6 +4,7 @@ import engine.physics.World;
 import engine.render.Window;
 import engine.render.guis.Gui;
 import engine.render.guis.GuiManager;
+import engine.render.guis.components.ClickComponent;
 import engine.render.models.OBJLoader;
 import engine.render.models.RawModel;
 import engine.render.models.TexturedModel;
@@ -11,6 +12,8 @@ import engine.render.renderers.MasterRenderer;
 import engine.render.textures.ModelTexture;
 import engine.render.textures.Texture;
 import engine.utils.*;
+import engine.utils.peripherals.Keyboard;
+import engine.utils.peripherals.Mouse;
 import org.joml.Vector3f;
 
 import static engine.utils.GlobalVars.CFG_FPS_MAX;
@@ -47,6 +50,8 @@ public class Client {
     private void tick(){
         glfwPollEvents();
         Keyboard.tick();
+        Mouse.tick();
+        guiManager.handleComponents();
     }
 
     /**
@@ -72,10 +77,13 @@ public class Client {
     }
 
     private void addGuis(){
-        ModelTexture modelTexture = new ModelTexture(new Texture("/resource/muffin.jpeg"));
-        RawModel model = Loader.loadToVAO(new float[]{-.5f,.5f,0,.5f,.5f,0,-.5f,-.5f, 0, .5f, -.5f,0},new float[]{0,0,1,0,0,1,0,0,1,0,0,1},new float[]{0,0,1,0,0,1,1,1},new int[]{0,1,2,2,1,3});
-        TexturedModel texturedModel = new TexturedModel(model, modelTexture);
-        guiManager.addGui(new Gui(texturedModel, 0,0,100,100));
+        Gui testGui = new Gui(new Texture("/resources/muffin.jpeg"), 10,10,100,100);
+        testGui.addComponent((ClickComponent) (buttons, mouseX, mouseY) -> {
+            if(buttons[GLFW_MOUSE_BUTTON_1] && mouseX>10 && mouseX<110 && mouseY>10&& mouseY<110){
+                System.out.println("clicked");
+            }
+        });
+        guiManager.addGui(testGui);
     }
 
     /**
@@ -92,13 +100,15 @@ public class Client {
             throw new IllegalStateException("Failed to initialize GLFW");
         }
         window = new Window();
+        Keyboard.focus(window);
+        Mouse.focus(window);
         glEnable(GL_TEXTURE_2D);
         glEnable(GL_DEPTH_TEST);
         world = new World();
         guiManager = new GuiManager();
         addEntities();
         addGuis();
-        renderer = new MasterRenderer(window, camera, world);
+        renderer = new MasterRenderer(window, camera, world, guiManager);
         tick();
     }
 

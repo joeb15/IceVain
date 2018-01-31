@@ -12,7 +12,7 @@ public class GlobalVars {
     public static final String GAME_NAME = "Ice Vain";
     public static final int VERSION_MAJOR = 0;
     public static final int VERSION_MINOR = 0;
-    public static final int VERSION_MICRO = 2;
+    public static final int VERSION_MICRO = 3;
 
     /**
      *  A list of config values and their names
