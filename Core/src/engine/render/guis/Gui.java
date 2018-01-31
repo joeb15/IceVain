@@ -58,4 +58,18 @@ public class Gui {
     public Vector2f getSize(){
         return size;
     }
+
+    public void setPos(Vector2f pos) {
+        this.pos = pos;
+        calculateMatrix();
+    }
+
+    public void setSize(Vector2f size) {
+        this.size = size;
+        calculateMatrix();
+    }
+
+    public void setTexture(Texture texture) {
+        this.texture = texture;
+    }
 }

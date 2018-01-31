@@ -9,6 +9,9 @@ import engine.utils.Config;
 import engine.utils.GlobalVars;
 import org.joml.Matrix4f;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
@@ -34,11 +37,12 @@ public class GuiRenderer{
         glBindVertexArray(rawModel.getVaoId());
         shader.loadViewMatrix(viewMatrix);
         shader.loadTexture();
-        for(Texture texture : guiManager.getGuiHash().keySet()){
+        HashMap<Texture, ArrayList<Gui>> guiHash = guiManager.getGuiHash();
+        for(Texture texture : guiHash.keySet()){
             for(int i:shader.attribs)
                 glEnableVertexAttribArray(i);
             texture.bind(0);
-            for(Gui gui:guiManager.getGuiHash().get(texture)) {
+            for(Gui gui:guiHash.get(texture)) {
                 shader.loadTransformationMatrix(gui.getTransformationMatrix());
                 glDrawElements(GL_TRIANGLES, rawModel.getVertexCount(), GL_UNSIGNED_INT, 0);
             }

@@ -11,8 +11,8 @@ import java.util.HashMap;
 
 public class GuiManager {
 
-    private HashMap<Texture, ArrayList<Gui>> guis;
-
+    private HashMap<Texture, ArrayList<Gui>> guiHash;
+    private ArrayList<Gui> guis;
     private boolean[] pressed = new boolean[8];
     private boolean[] wasPressed = new boolean[8];
     private Vector2f pos = new Vector2f();
@@ -20,7 +20,8 @@ public class GuiManager {
     private Vector2f[] lastDown;
 
     public GuiManager(){
-        guis = new HashMap<>();
+        guis = new ArrayList<>();
+        guiHash = new HashMap<>();
         Mouse.addMouseCallback((boolean[] pressed, boolean[] wasPressed, Vector2f lastPos, Vector2f pos, Vector2f[] lastDown)->{
             this.lastPos=this.pos;
             this.pos=pos;
@@ -33,43 +34,45 @@ public class GuiManager {
     }
 
     public void addGui(Gui gui){
-        Texture texture = gui.getTexture();
-        if(!guis.containsKey(texture)){
-            guis.put(texture, new ArrayList<>());
-        }
-        guis.get(texture).add(gui);
+        guis.add(gui);
     }
 
     public HashMap<Texture, ArrayList<Gui>> getGuiHash() {
-        return guis;
+        guiHash.clear();
+        for(Gui gui:guis){
+            Texture texture = gui.getTexture();
+            if(!guiHash.containsKey(texture)){
+                guiHash.put(texture, new ArrayList<>());
+            }
+            guiHash.get(texture).add(gui);
+        }
+        return guiHash;
     }
 
     public void handleComponents(){
-        for(ArrayList<Gui> guis:this.guis.values()){
-            for(Gui gui:guis){
-                for(GuiComponent gc:gui.getComponents()){
-                    if(gc instanceof ClickComponent){
-                        ClickComponent clickComponent = (ClickComponent) gc;
-                        if(!pressed[clickComponent.getMouseButton()] && wasPressed[clickComponent.getMouseButton()] &&
-                                Utils.contains(clickComponent, pos) &&
-                                Utils.contains(clickComponent, lastDown[clickComponent.getMouseButton()])){
-                            clickComponent.onClick(pos);
-                        }
-                    }else if(gc instanceof HoverComponent){
-                        HoverComponent hoverComponent = (HoverComponent) gc;
-                        if(Utils.contains(hoverComponent, pos)){
-                            hoverComponent.onHover(pos);
-                        }
-                    }else if(gc instanceof EnterHoverComponent){
-                        EnterHoverComponent enterHoverComponent = (EnterHoverComponent) gc;
-                        if(!Utils.contains(enterHoverComponent, lastPos) && Utils.contains(enterHoverComponent, pos)) {
-                            enterHoverComponent.onEnterHover(pos, lastPos);
-                        }
-                    }else if(gc instanceof ExitHoverComponent){
-                        ExitHoverComponent exitHoverComponent = (ExitHoverComponent) gc;
-                        if(Utils.contains(exitHoverComponent, lastPos) && !Utils.contains(exitHoverComponent, pos)) {
-                            exitHoverComponent.onExitHover(pos, lastPos);
-                        }
+        for(Gui gui:guis){
+            for(GuiComponent gc:gui.getComponents()){
+                if(gc instanceof ClickComponent){
+                    ClickComponent clickComponent = (ClickComponent) gc;
+                    if(!pressed[clickComponent.getMouseButton()] && wasPressed[clickComponent.getMouseButton()] &&
+                            Utils.contains(clickComponent, pos) &&
+                            Utils.contains(clickComponent, lastDown[clickComponent.getMouseButton()])){
+                        clickComponent.onClick(pos);
+                    }
+                }else if(gc instanceof HoverComponent){
+                    HoverComponent hoverComponent = (HoverComponent) gc;
+                    if(Utils.contains(hoverComponent, pos)){
+                        hoverComponent.onHover(pos);
+                    }
+                }else if(gc instanceof EnterHoverComponent){
+                    EnterHoverComponent enterHoverComponent = (EnterHoverComponent) gc;
+                    if(!Utils.contains(enterHoverComponent, lastPos) && Utils.contains(enterHoverComponent, pos)) {
+                        enterHoverComponent.onEnterHover(pos, lastPos);
+                    }
+                }else if(gc instanceof ExitHoverComponent){
+                    ExitHoverComponent exitHoverComponent = (ExitHoverComponent) gc;
+                    if(Utils.contains(exitHoverComponent, lastPos) && !Utils.contains(exitHoverComponent, pos)) {
+                        exitHoverComponent.onExitHover(pos, lastPos);
                     }
                 }
             }

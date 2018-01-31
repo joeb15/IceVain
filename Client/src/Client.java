@@ -80,7 +80,9 @@ public class Client {
     }
 
     private void addGuis(){
-        Gui testGui = new Gui(new Texture("/resources/muffin.jpeg"), 10,10,100,100);
+        Texture muffin = new Texture("/resources/muffin.jpeg");
+        Texture stall = new Texture("/resources/stallTexture.png");
+        Gui testGui = new Gui(muffin, 10,10,100,100);
         testGui.addComponent(new ClickComponent(testGui.getPos(), testGui.getSize(), GLFW_MOUSE_BUTTON_1) {
             public void onClick(Vector2f pos) {
                 Debug.log("Clicked");
@@ -88,12 +90,12 @@ public class Client {
         });
         testGui.addComponent(new EnterHoverComponent(testGui.getPos(), testGui.getSize()) {
             public void onEnterHover(Vector2f pos, Vector2f lastPos) {
-                Debug.log("Entered");
+                testGui.setTexture(stall);
             }
         });
         testGui.addComponent(new ExitHoverComponent(testGui.getPos(), testGui.getSize()) {
             public void onExitHover(Vector2f pos, Vector2f lastPos) {
-                Debug.log("Exited");
+                testGui.setTexture(muffin);
             }
         });
         guiManager.addGui(testGui);
