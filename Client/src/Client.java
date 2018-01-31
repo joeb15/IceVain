@@ -5,6 +5,8 @@ import engine.render.Window;
 import engine.render.guis.Gui;
 import engine.render.guis.GuiManager;
 import engine.render.guis.components.ClickComponent;
+import engine.render.guis.components.EnterHoverComponent;
+import engine.render.guis.components.ExitHoverComponent;
 import engine.render.models.OBJLoader;
 import engine.render.models.RawModel;
 import engine.render.models.TexturedModel;
@@ -14,6 +16,7 @@ import engine.render.textures.Texture;
 import engine.utils.*;
 import engine.utils.peripherals.Keyboard;
 import engine.utils.peripherals.Mouse;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import static engine.utils.GlobalVars.CFG_FPS_MAX;
@@ -78,9 +81,19 @@ public class Client {
 
     private void addGuis(){
         Gui testGui = new Gui(new Texture("/resources/muffin.jpeg"), 10,10,100,100);
-        testGui.addComponent((ClickComponent) (buttons, mouseX, mouseY) -> {
-            if(buttons[GLFW_MOUSE_BUTTON_1] && mouseX>10 && mouseX<110 && mouseY>10&& mouseY<110){
-                System.out.println("clicked");
+        testGui.addComponent(new ClickComponent(testGui.getPos(), testGui.getSize(), GLFW_MOUSE_BUTTON_1) {
+            public void onClick(Vector2f pos) {
+                Debug.log("Clicked");
+            }
+        });
+        testGui.addComponent(new EnterHoverComponent(testGui.getPos(), testGui.getSize()) {
+            public void onEnterHover(Vector2f pos, Vector2f lastPos) {
+                Debug.log("Entered");
+            }
+        });
+        testGui.addComponent(new ExitHoverComponent(testGui.getPos(), testGui.getSize()) {
+            public void onExitHover(Vector2f pos, Vector2f lastPos) {
+                Debug.log("Exited");
             }
         });
         guiManager.addGui(testGui);
