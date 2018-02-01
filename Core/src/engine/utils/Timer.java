@@ -1,10 +1,10 @@
 package engine.utils;
 
-import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Timer {
 
-    private static ArrayList<Timer> timers = new ArrayList<>();
+    private static CopyOnWriteArrayList<Timer> timers = new CopyOnWriteArrayList<>();
     private static long start = System.currentTimeMillis();
     private TimerInterface timerInterface;
     private double millis;

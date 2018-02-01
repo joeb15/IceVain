@@ -8,11 +8,12 @@ import org.joml.Vector2f;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GuiManager {
 
     private HashMap<Texture, ArrayList<Gui>> guiHash;
-    private ArrayList<Gui> guis;
+    private CopyOnWriteArrayList<Gui> guis;
     private boolean[] pressed = new boolean[8];
     private boolean[] wasPressed = new boolean[8];
     private Vector2f pos = new Vector2f();
@@ -20,7 +21,7 @@ public class GuiManager {
     private Vector2f[] lastDown;
 
     public GuiManager(){
-        guis = new ArrayList<>();
+        guis = new CopyOnWriteArrayList<>();
         guiHash = new HashMap<>();
         Mouse.addMouseCallback((boolean[] pressed, boolean[] wasPressed, Vector2f lastPos, Vector2f pos, Vector2f[] lastDown)->{
             this.lastPos=this.pos;
@@ -77,5 +78,9 @@ public class GuiManager {
                 }
             }
         }
+    }
+
+    public void clearGuis() {
+        guis.clear();
     }
 }

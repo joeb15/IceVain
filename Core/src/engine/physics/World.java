@@ -30,4 +30,9 @@ public class World {
     public ArrayList<Light> getLights() {
         return lights;
     }
+
+    public void clearEntities() {
+        entities.clear();
+        lights.clear();
+    }
 }
