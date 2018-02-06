@@ -75,6 +75,26 @@ public class GuiManager {
                     if(Utils.contains(exitHoverComponent, lastPos) && !Utils.contains(exitHoverComponent, pos)) {
                         exitHoverComponent.onExitHover(pos, lastPos);
                     }
+                }else if(gc instanceof MousePressedComponent){
+                    MousePressedComponent mousePressedComponent = (MousePressedComponent) gc;
+                    if(pressed[mousePressedComponent.getMouseButton()] && Utils.contains(mousePressedComponent, pos)){
+                        mousePressedComponent.onPressed(pos);
+                    }
+                }else if(gc instanceof MouseReleasedComponent){
+                    MouseReleasedComponent mouseReleasedComponent = (MouseReleasedComponent) gc;
+                    if(pressed[mouseReleasedComponent.getMouseButton()] && Utils.contains(mouseReleasedComponent, pos)){
+                        mouseReleasedComponent.onReleased(pos);
+                    }
+                }else if(gc instanceof MouseJustPressedComponent){
+                    MouseJustPressedComponent mousePressedComponent = (MouseJustPressedComponent) gc;
+                    if(pressed[mousePressedComponent.getMouseButton()] && !wasPressed[mousePressedComponent.getMouseButton()] && Utils.contains(mousePressedComponent, pos)){
+                        mousePressedComponent.onPressed(pos);
+                    }
+                }else if(gc instanceof MouseJustReleasedComponent){
+                    MouseJustReleasedComponent mouseReleasedComponent = (MouseJustReleasedComponent) gc;
+                    if(!pressed[mouseReleasedComponent.getMouseButton()] && wasPressed[mouseReleasedComponent.getMouseButton()] && Utils.contains(mouseReleasedComponent, pos)){
+                        mouseReleasedComponent.onReleased(pos);
+                    }
                 }
             }
         }
