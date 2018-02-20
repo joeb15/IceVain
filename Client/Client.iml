@@ -7,8 +7,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="Core" />
-    <orderEntry type="library" name="LWJGL3" level="application" />
+    <orderEntry type="module" module-name="Core" exported="" />
     <orderEntry type="library" name="jars" level="application" />
   </component>
 </module>

@@ -49,5 +49,9 @@ public class Timer {
         float time = (System.currentTimeMillis()-start)/1000f;
         return time;
     }
+
+    public static void runAsSideProcess(Runnable timerInterface) {
+        new Thread(timerInterface).start();
+    }
 }
 

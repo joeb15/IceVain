@@ -12,7 +12,14 @@ public class GlobalVars {
     public static final String GAME_NAME = "Ice Vain";
     public static final int VERSION_MAJOR = 0;
     public static final int VERSION_MINOR = 0;
-    public static final int VERSION_MICRO = 3;
+    public static final int VERSION_MICRO = 4;
+
+    public static final long SOCKET_TIME_OUT_TIME = 10000;
+
+    public static final int SOCKET_PING = 0;
+    public static final int SOCKET_BROADCAST = 1;
+    public static final int SOCKET_LOGIN = 2;
+    public static final int SOCKET_DISCONNECT = 3;
 
     /**
      *  A list of config values and their names
