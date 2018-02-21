@@ -1,5 +1,7 @@
 package engine.render.guis;
 
+import engine.render.fonts.BitmapFont;
+import engine.render.fonts.CharacterWithPos;
 import engine.render.guis.components.*;
 import engine.render.textures.Texture;
 import engine.utils.Utils;
@@ -13,12 +15,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class GuiManager {
 
     private HashMap<Texture, ArrayList<Gui>> guiHash;
+    private HashMap<BitmapFont, CopyOnWriteArrayList<CharacterWithPos>> fontHash = new HashMap<>();
     private CopyOnWriteArrayList<Gui> guis;
     private boolean[] pressed = new boolean[8];
     private boolean[] wasPressed = new boolean[8];
     private Vector2f pos = new Vector2f();
     private Vector2f lastPos = new Vector2f();
     private Vector2f[] lastDown;
+    private int stringID = 0 ;
 
     public GuiManager(){
         guis = new CopyOnWriteArrayList<>();
@@ -102,5 +106,47 @@ public class GuiManager {
 
     public void clearGuis() {
         guis.clear();
+        fontHash.clear();
+    }
+
+    public void removeString(int stringID){
+        for(CopyOnWriteArrayList<CharacterWithPos> al:fontHash.values()){
+            for(CharacterWithPos c:al){
+                if(c.id==stringID)
+                    al.remove(c);
+            }
+        }
+    }
+
+    public int addString(BitmapFont font, String text, float x, float y, float fontSize){
+        float pointer = x;
+        float ratio = fontSize/font.getFontSize();
+        float yoff=0;
+        if(!fontHash.containsKey(font))
+            fontHash.put(font, new CopyOnWriteArrayList<>());
+        for(int c:text.chars().toArray()){
+            if(c=='\n'){
+                pointer=x;
+                yoff+=font.getCharHeight()*ratio;
+                continue;
+            }
+            if(font.getChar(c)==null)
+                continue;
+            CharacterWithPos characterWithPos = new CharacterWithPos();
+            pointer += font.getChar(c).xoff*ratio;
+            characterWithPos.fontSize=fontSize;
+            characterWithPos.x=pointer;
+            characterWithPos.y=y-yoff+(font.getCharHeight()-font.getChar(c).charH-font.getChar(c).yoff)*ratio;
+            characterWithPos.character=c;
+            characterWithPos.id=stringID;
+            fontHash.get(font).add(characterWithPos);
+            pointer += font.getChar(c).x*ratio;
+            pointer += font.getChar(c).xadv*ratio;
+        }
+        return stringID++;
+    }
+
+    public HashMap<BitmapFont, CopyOnWriteArrayList<CharacterWithPos>> getFontHash() {
+        return fontHash;
     }
 }

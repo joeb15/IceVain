@@ -2,6 +2,7 @@ package states;
 
 import engine.exceptions.FailedToConnectException;
 import engine.physics.World;
+import engine.render.fonts.BitmapFont;
 import engine.render.guis.Gui;
 import engine.render.guis.GuiManager;
 import engine.render.guis.components.ClickComponent;
@@ -11,7 +12,6 @@ import engine.render.textures.Texture;
 import engine.sockets.SocketManager;
 import engine.utils.Config;
 import engine.utils.GlobalVars;
-import engine.utils.events.Event;
 import engine.utils.events.EventHandler;
 import engine.utils.states.State;
 import events.ClientConnectEvent;
@@ -36,10 +36,6 @@ public class SplashScreen extends State {
         addGuis();
     }
 
-    public void onEvent(Event e) {
-
-    }
-
     public void onDestroy() {
         guiManager.clearGuis();
     }
@@ -47,7 +43,13 @@ public class SplashScreen extends State {
     private void addGuis() {
         Texture muffin = new Texture("/resources/muffin.jpg");
         Texture stall = new Texture("/resources/stallTexture.png");
+        BitmapFont bitmapFont = new BitmapFont("/fonts/Arial.fnt");
+
+        System.out.println(bitmapFont.getWidth("Hello World!", 12));
+
+        Texture font = bitmapFont.getPageImages()[0];
         Gui testGui = new Gui(muffin, 10,10,300,300);
+        guiManager.addString(bitmapFont, "Hello World", 10, 310, 100);
 
         testGui.addComponent(new ClickComponent(testGui.getPos(), testGui.getSize(), GLFW_MOUSE_BUTTON_1) {
             public void onClick(Vector2f pos) {
@@ -67,15 +69,13 @@ public class SplashScreen extends State {
             }
         });
 
-        Gui testGui2 = new Gui(muffin, Config.getInt(GlobalVars.CFG_FRAME_WIDTH)-310,10,300,300);
+        Gui testGui2 = new Gui(font, Config.getInt(GlobalVars.CFG_FRAME_WIDTH)-310,10,300,300);
         testGui2.addComponent(new ClickComponent(testGui2.getPos(), testGui2.getSize(), GLFW_MOUSE_BUTTON_1) {
             public void onClick(Vector2f pos) {
                 try {
                     ClientSocket clientSocket = new ClientSocket("localhost", 8888, socketManager);
                     EventHandler.onEvent("clientConnect", new ClientConnectEvent(clientSocket));
-                    EventHandler.addEventCallback("cleanUp",(evt)->{
-                        clientSocket.disconnect();
-                    });
+                    EventHandler.addEventCallback("cleanUp",(evt)-> clientSocket.disconnect());
                 } catch (FailedToConnectException e) {
                     System.err.println("Failed to connect to server");
                 }
@@ -85,7 +85,7 @@ public class SplashScreen extends State {
         Gui testGui3 = new Gui(muffin, (Config.getInt(GlobalVars.CFG_FRAME_WIDTH)-310)/2,10,300,300);
         testGui3.addComponent(new ClickComponent(testGui3.getPos(), testGui3.getSize(), GLFW_MOUSE_BUTTON_1) {
             public void onClick(Vector2f pos) {
-                socketManager.pushMessage(01, "Hello Joe");
+                socketManager.pushMessage(1, "Hello Joe");
             }
         });
 
