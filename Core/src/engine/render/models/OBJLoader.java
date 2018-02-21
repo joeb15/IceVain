@@ -43,6 +43,7 @@ public class OBJLoader {
                 }
             }
             do{
+                assert line != null;
                 line = line.replaceAll("  ", " ");
                 String[] parts = line.split(" ");
                 if(line.startsWith("f ")){

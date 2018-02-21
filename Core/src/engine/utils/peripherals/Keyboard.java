@@ -116,7 +116,7 @@ public class Keyboard {
 
     /**
      * Initializes all of the basic keyboard shortcuts
-     * @param camera
+     * @param camera the camera that will be moved with these controls
      */
     public static void initializeKeyboardConfig(Camera camera) {
         addKeyCallbackFromConfig(CFG_CONTROL_FORWARD, (d, wd)->{ if(d)camera.moveForward();});

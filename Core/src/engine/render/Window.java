@@ -10,6 +10,7 @@ import static engine.utils.GlobalVars.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL.createCapabilities;
 
+@SuppressWarnings("ALL")
 public class Window {
 
     private long window;

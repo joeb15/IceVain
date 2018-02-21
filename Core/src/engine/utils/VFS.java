@@ -48,7 +48,7 @@ public class VFS {
      */
     public static void createVFS(String path, String virtualPath){
         if(!virtualSystems.containsKey(virtualPath))
-            virtualSystems.put(virtualPath, new ArrayList<String>());
+            virtualSystems.put(virtualPath, new ArrayList<>());
         virtualSystems.get(virtualPath).add(path);
     }
 
@@ -84,5 +84,13 @@ public class VFS {
         GlobalVars.writeVariable("USERNAME", NTSystem.getName());
         GlobalVars.writeVariable("COMPUTER_NAME", NTSystem.getDomain());
 
+    }
+
+    public static File getParent(File fontFile) {
+        return new File(fontFile.getParent());
+    }
+
+    public static File getFileInSameFolder(File fontFile, String newFileName) {
+        return new File(fontFile.getParent()+"/"+newFileName);
     }
 }

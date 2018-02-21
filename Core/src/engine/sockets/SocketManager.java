@@ -22,8 +22,9 @@ public class SocketManager {
     }
 
     public void pushMessage(int code, String message){
-        for(ArrayList al:messageStack.values()) {
-            al.add(code + "/" + message);
+        for(ArrayList<String> al:messageStack.values()) {
+            if(al!=null)
+                al.add(code + "/" + message);
         }
     }
 

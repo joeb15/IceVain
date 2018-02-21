@@ -2,7 +2,10 @@ package engine.render.shaders;
 
 import engine.utils.Debug;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static org.lwjgl.opengl.GL20.*;
@@ -89,8 +92,6 @@ public abstract class Shader {
                 stringBuilder.append(line);
                 stringBuilder.append('\n');
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -14,8 +14,11 @@ public class GlobalVars {
     public static final int VERSION_MINOR = 0;
     public static final int VERSION_MICRO = 4;
 
-    public static final long SOCKET_TIME_OUT_TIME = 10000;
 
+    /**
+     * A list of socket values
+     */
+    public static final long SOCKET_TIME_OUT_TIME = 10000;
     public static final int SOCKET_PING = 0;
     public static final int SOCKET_BROADCAST = 1;
     public static final int SOCKET_LOGIN = 2;

@@ -53,6 +53,39 @@ public class Texture {
         }
     }
 
+    public Texture(File file) {
+        BufferedImage bi = null;
+        try {
+            bi = ImageIO.read(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        assert bi != null;
+        width = bi.getWidth();
+        height = bi.getHeight();
+
+        int[] pixels = new int[width*height];
+        bi.getRGB(0,0,width,height,pixels, 0, width);
+        ByteBuffer byteBuffer = BufferUtils.createByteBuffer(height*width*4);
+        for(int y=0;y<height;y++){
+            for(int x=0;x<width;x++){
+                int pixel = pixels[y*width+x];
+                byteBuffer.put((byte)((pixel >> 16)&0xff));
+                byteBuffer.put((byte)((pixel >>  8)&0xff));
+                byteBuffer.put((byte)((pixel      )&0xff));
+                byteBuffer.put((byte)((pixel >> 24)&0xff));
+            }
+        }
+        byteBuffer.flip();
+        id = glGenTextures();
+        textures.add(id);
+        glBindTexture(GL_TEXTURE_2D, id);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, byteBuffer);
+
+    }
+
     public void cleanUp(){
         for(int i:textures)
             glDeleteTextures(i);

@@ -10,11 +10,12 @@ public class Timer {
     private double millis;
     private int numLoops;
     private long next;
-    private double delta=0;
+    private double delta;
 
     public static void createTimer(TimerInterface timerInterface, double millis, int numLoops){
         new Timer(timerInterface, millis, numLoops);
     }
+
     private Timer(TimerInterface timerInterface, double millis, int numLoops) {
         timers.add(this);
         if(millis<0)
@@ -46,8 +47,7 @@ public class Timer {
     }
 
     public static float getTime() {
-        float time = (System.currentTimeMillis()-start)/1000f;
-        return time;
+        return (System.currentTimeMillis()-start)/1000f;
     }
 
     public static void runAsSideProcess(Runnable timerInterface) {
