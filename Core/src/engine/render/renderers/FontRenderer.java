@@ -25,6 +25,11 @@ public class FontRenderer {
     private GuiManager guiManager;
     private Matrix4f viewMatrix;
 
+    /**
+     * A renderer to render all of the fonts
+     *
+     * @param guiManager The guiManager that handles all of the strings
+     */
     public FontRenderer(GuiManager guiManager){
         shader = new FontShader();
         this.guiManager=guiManager;
@@ -33,12 +38,14 @@ public class FontRenderer {
         viewMatrix = new Matrix4f().ortho2D(0,w,0,h);
     }
 
+    /**
+     * Renders all of the strings to the screen
+     */
     public void render(){
         shader.bind();
         RawModel rawModel = Gui.getRect();
         glBindVertexArray(rawModel.getVaoId());
         shader.loadViewMatrix(viewMatrix);
-        shader.loadTextures();
         HashMap<BitmapFont, CopyOnWriteArrayList<CharacterWithPos>> fontHash = guiManager.getFontHash();
         for(BitmapFont font : fontHash.keySet()){
             for(int i:shader.attribs)
@@ -48,7 +55,6 @@ public class FontRenderer {
             for(CharacterWithPos characterWithPos: fontHash.get(font)) {
                 BitmapChar bitmapChar = font.getChar(characterWithPos.character);
                 shader.loadTexturePage(bitmapChar.page);
-                System.out.println();
                 shader.loadTextureTransform(new Matrix4f()
                         .translate(bitmapChar.x, bitmapChar.y,0)
                         .scale(bitmapChar.w, bitmapChar.h, 0));
@@ -64,6 +70,9 @@ public class FontRenderer {
         shader.unbind();
     }
 
+    /**
+     * Cleans up all resources created by the renderer
+     */
     public void cleanUp(){
         shader.cleanUp();
     }

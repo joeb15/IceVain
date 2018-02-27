@@ -86,11 +86,103 @@ public class VFS {
 
     }
 
-    public static File getParent(File fontFile) {
-        return new File(fontFile.getParent());
+    /**
+     * Returns the parent folder of a file
+     *
+     * @param file The file to find the parent of
+     * @return The parent folder as a <code>File</code>
+     */
+    public static File getParent(File file) {
+        return new File(file.getParent());
     }
 
-    public static File getFileInSameFolder(File fontFile, String newFileName) {
-        return new File(fontFile.getParent()+"/"+newFileName);
+    /**
+     * Gets a file within the same folder given the other file's name
+     *
+     * @param file The file that is in the directory
+     * @param newFileName The file name of the file you are trying to find
+     * @return The new file if it exists
+     */
+    public static File getFileInSameFolder(File file, String newFileName) {
+        return new File(getParent(file)+"/"+newFileName);
+    }
+
+    /**
+     * Gets all the files in a given folder
+     *
+     * @param file The folder to get the children of
+     * @return The array of children files
+     */
+    public static File[] getFilesInFolder(File file){
+        return file.listFiles();
+    }
+
+    /**
+     * Gets all files within a folder containing a certain string
+     *
+     * @param folder The folder to search within
+     * @param regex The string to search for
+     * @return An array of <code>File</code> with all the files satisfying this regex
+     */
+    public static File[] getFilesWithString(File folder, String regex){
+        File[] children = getFilesInFolder(folder);
+        int num = 0;
+        for(File f:children){
+            if(f.getName().contains(regex)){
+                num++;
+            }
+        }
+        if(num==0)
+            return null;
+        File[] contains = new File[num];
+        num=0;
+        for(File f:children){
+            if(f.getName().contains(regex)){
+                contains[num] = f;
+                num++;
+            }
+        }
+        return contains;
+    }
+
+    /**
+     * Returns all files within a folder with recursion
+     *
+     * @param folder The root folder to search in
+     * @param regex The string to search for in files
+     * @return The <code>File[]</code> that contains the string
+     */
+    public static File[] getFilesWithStringRecursive(File folder, String regex){
+        File[] children = getFilesInFolder(folder);
+        int num = 0;
+        for(File f:children){
+            if(f.isDirectory()){
+                File[] arr = getFilesWithStringRecursive(f, regex);
+                if(arr!=null)
+                    num+=arr.length;
+            }else {
+                if (f.getName().contains(regex)) {
+                    num++;
+                }
+            }
+        }
+        if(num==0)
+            return null;
+        File[] contains = new File[num];
+        num=0;
+        for(File f:children){
+            if(f.isDirectory()){
+                File[] arr = getFilesWithStringRecursive(f, regex);
+                if(arr!=null)
+                    for(File f2:arr){
+                        contains[num++] = f2;
+                    }
+            }else {
+                if (f.getName().contains(regex)) {
+                    contains[num++] = f;
+                }
+            }
+        }
+        return contains;
     }
 }

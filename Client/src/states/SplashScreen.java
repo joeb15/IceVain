@@ -1,19 +1,18 @@
 package states;
 
 import engine.exceptions.FailedToConnectException;
-import engine.physics.World;
 import engine.render.fonts.BitmapFont;
 import engine.render.guis.Gui;
 import engine.render.guis.GuiManager;
-import engine.render.guis.components.ClickComponent;
-import engine.render.guis.components.EnterHoverComponent;
-import engine.render.guis.components.ExitHoverComponent;
+import engine.render.guis.components.*;
 import engine.render.textures.Texture;
 import engine.sockets.SocketManager;
 import engine.utils.Config;
+import engine.utils.Debug;
 import engine.utils.GlobalVars;
 import engine.utils.events.EventHandler;
 import engine.utils.states.State;
+import engine.world.World;
 import events.ClientConnectEvent;
 import org.joml.Vector2f;
 import socket.ClientSocket;
@@ -26,26 +25,41 @@ public class SplashScreen extends State {
     private World world;
     private SocketManager socketManager;
 
+    /**
+     * A State that represents the initial splash screen of the game
+     *
+     * @param guiManager The guiManager that is used
+     * @param world The world that will be displayed
+     * @param socketManager the socketManager that will handle all of the client-server interactions
+     */
     public SplashScreen(GuiManager guiManager, World world, SocketManager socketManager) {
         this.guiManager = guiManager;
         this.world=world;
         this.socketManager=socketManager;
     }
 
+    /**
+     * A method to run on the creation of the SplashScreen
+     */
     public void onCreate() {
+        guiManager.clearGuis();
         addGuis();
     }
 
+    /**
+     * A method to run on the destruction of the SplashScreen
+     */
     public void onDestroy() {
         guiManager.clearGuis();
     }
 
+    /**
+     * Add all the GUIs for the SplashScreen State
+     */
     private void addGuis() {
         Texture muffin = new Texture("/resources/muffin.jpg");
         Texture stall = new Texture("/resources/stallTexture.png");
         BitmapFont bitmapFont = new BitmapFont("/fonts/Arial.fnt");
-
-        System.out.println(bitmapFont.getWidth("Hello World!", 12));
 
         Texture font = bitmapFont.getPageImages()[0];
         Gui testGui = new Gui(muffin, 10,10,300,300);
@@ -54,6 +68,18 @@ public class SplashScreen extends State {
         testGui.addComponent(new ClickComponent(testGui.getPos(), testGui.getSize(), GLFW_MOUSE_BUTTON_1) {
             public void onClick(Vector2f pos) {
                 stateManager.setState(new GameState(guiManager, world));
+            }
+        });
+
+        testGui.addComponent(new MouseJustPressedComponent(testGui.getPos(), testGui.getSize(), GLFW_MOUSE_BUTTON_1) {
+            public void onPressed(Vector2f pos) {
+                testGui.setTexture(font);
+            }
+        });
+
+        testGui.addComponent(new MouseJustReleasedComponent(testGui.getPos(), testGui.getSize(), GLFW_MOUSE_BUTTON_1) {
+            public void onReleased(Vector2f pos) {
+                testGui.setTexture(stall);
             }
         });
 
@@ -77,7 +103,7 @@ public class SplashScreen extends State {
                     EventHandler.onEvent("clientConnect", new ClientConnectEvent(clientSocket));
                     EventHandler.addEventCallback("cleanUp",(evt)-> clientSocket.disconnect());
                 } catch (FailedToConnectException e) {
-                    System.err.println("Failed to connect to server");
+                    Debug.error("Failed to connect to server");
                 }
             }
         });

@@ -2,6 +2,9 @@ package engine.utils;
 
 import java.util.HashMap;
 
+/**
+ * A class to hold all of the variables that should be referenced across the project
+ */
 public class GlobalVars {
 
     private static HashMap<String, String> variableDefinitions = new HashMap<>();
@@ -12,7 +15,7 @@ public class GlobalVars {
     public static final String GAME_NAME = "Ice Vain";
     public static final int VERSION_MAJOR = 0;
     public static final int VERSION_MINOR = 0;
-    public static final int VERSION_MICRO = 4;
+    public static final int VERSION_MICRO = 5;
 
 
     /**
@@ -32,6 +35,7 @@ public class GlobalVars {
     public static final String CFG_FRAME_WIDTH = "window_width";
     public static final String CFG_FRAME_HEIGHT = "window_height";
     public static final String CFG_FRAME_FULLSCREEN = "window_fullscreen";
+    public static final String CFG_LOD_BIAS = "lod_bias";
 
     public static final String CFG_CONTROL_FORWARD = "control_forward";
     public static final String CFG_CONTROL_BACK = "control_back";

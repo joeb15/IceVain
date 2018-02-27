@@ -16,6 +16,13 @@ public class ClientSocket {
 
     private Socket connectionToTheServer = null;
 
+    /**
+     * The socket that will handle all of the client side interfacing between the server and the client
+     * @param host The IP address of the host computer
+     * @param port The port that is open on the host computer
+     * @param socketManager the socketManager that is used to
+     * @throws FailedToConnectException thrown if the client cannot connect after <code>NUM_TRIES</code> times
+     */
     public ClientSocket(String host, int port, SocketManager socketManager) throws FailedToConnectException {
         int numTries=0;
         while(connectionToTheServer==null && numTries<NUM_TRIES) {
@@ -85,6 +92,9 @@ public class ClientSocket {
         }
     }
 
+    /**
+     * Disconnects the client from the server
+     */
     public void disconnect() {
         if(connectionToTheServer.isConnected()) {
             try {

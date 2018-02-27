@@ -17,6 +17,15 @@ public class Loader {
     private static ArrayList<Integer> vaos = new ArrayList<>();
     private static ArrayList<Integer> vbos = new ArrayList<>();
 
+    /**
+     * Loads a model to a VAO given it's positions, normals, textureCoords, and indices
+     *
+     * @param positions The <code>float[]</code> of positions
+     * @param normals The <code>float[]</code> of normals
+     * @param textureCoords The <code>float[]</code> of texture coordinates
+     * @param indicies The <code>int[]</code> of indices
+     * @return The model represented as a <code>RawModel</code>
+     */
     public static RawModel loadToVAO(float[] positions, float[] normals, float[] textureCoords, int[] indicies){
         int vaoID = createVAO();
         bindIndicesBuffer(indicies);
@@ -27,6 +36,11 @@ public class Loader {
         return new RawModel(vaoID, indicies.length);
     }
 
+    /**
+     * Binds an index buffer
+     *
+     * @param indices The indices to add to the buffer
+     */
     private static void bindIndicesBuffer(int[] indices) {
         int vboID = glGenBuffers();
         vbos.add(vboID);
@@ -34,6 +48,11 @@ public class Loader {
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, createBuffer(indices), GL_STATIC_DRAW);
     }
 
+    /**
+     * Creates a VAO to use for storing attributes
+     *
+     * @return The VAO's ID
+     */
     private static int createVAO(){
         int vaoID = glGenVertexArrays();
         vaos.add(vaoID);
@@ -41,6 +60,13 @@ public class Loader {
         return vaoID;
     }
 
+    /**
+     * Stores data in an attribute array to use in the shaders
+     *
+     * @param attributeNumber The attribute to store the data in
+     * @param data The <code>float[]</code> with all of the data
+     * @param size The size of each bit of data i.e. <code>Vector3f</code> has a size of 3
+     */
     private static void storeDataInAttributeList(int attributeNumber, float[] data, int size){
         int vboID = glGenBuffers();
         vbos.add(vboID);
@@ -50,10 +76,19 @@ public class Loader {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
+    /**
+     * Unbinds the current VAO
+     */
     private static void unbindVAO(){
         glBindVertexArray(0);
     }
 
+    /**
+     * Creates a buffer from an array of data
+     *
+     * @param data The array to convert to a buffer
+     * @return The flipped buffer of data
+     */
     private static IntBuffer createBuffer(int[] data){
         IntBuffer intBuffer = BufferUtils.createIntBuffer(data.length);
         intBuffer.put(data);
@@ -61,6 +96,12 @@ public class Loader {
         return intBuffer;
     }
 
+    /**
+     * Creates a buffer from an array of data
+     *
+     * @param data The array to convert to a buffer
+     * @return The flipped buffer of data
+     */
     private static FloatBuffer createBuffer(float[] data){
         FloatBuffer floatBuffer = BufferUtils.createFloatBuffer(data.length);
         floatBuffer.put(data);
@@ -68,6 +109,9 @@ public class Loader {
         return floatBuffer;
     }
 
+    /**
+     * Frees up all allocated memory on program close
+     */
     public static void cleanUp(){
         for(int i:vaos)
             glDeleteVertexArrays(i);

@@ -12,10 +12,24 @@ public class Timer {
     private long next;
     private double delta;
 
+    /**
+     * Creates a timer
+     *
+     * @param timerInterface The callback to call when the timer is triggered
+     * @param millis The number of milliseconds between timer calls
+     * @param numLoops The number of loops to run, -1 for infinite
+     */
     public static void createTimer(TimerInterface timerInterface, double millis, int numLoops){
         new Timer(timerInterface, millis, numLoops);
     }
 
+    /**
+     * Creates a timer
+     *
+     * @param timerInterface The callback to call when the timer is triggered
+     * @param millis The number of milliseconds between timer calls
+     * @param numLoops The number of loops to run, -1 for infinite
+     */
     private Timer(TimerInterface timerInterface, double millis, int numLoops) {
         timers.add(this);
         if(millis<0)
@@ -27,11 +41,17 @@ public class Timer {
         this.numLoops=numLoops;
     }
 
+    /**
+     * Handles all timer instances
+     */
     public static void tick() {
         for (Timer timer : timers)
             timer.check();
     }
 
+    /**
+     * Checks whether the timer should be called or destroyed
+     */
     private void check(){
         long curr = System.currentTimeMillis();
         while(numLoops!=0 && curr>next){
@@ -46,12 +66,22 @@ public class Timer {
         }
     }
 
+    /**
+     * Gets the current time the game has been running
+     *
+     * @return The current time in seconds
+     */
     public static float getTime() {
         return (System.currentTimeMillis()-start)/1000f;
     }
 
-    public static void runAsSideProcess(Runnable timerInterface) {
-        new Thread(timerInterface).start();
+    /**
+     * Runs something as a side process
+     *
+     * @param sideProcess The process to run on the side
+     */
+    public static void runAsSideProcess(Runnable sideProcess) {
+        new Thread(sideProcess).start();
     }
 }
 

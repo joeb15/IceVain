@@ -15,6 +15,7 @@ public class Window {
 
     private long window;
     private int width, height;
+
     /**
      * A class to hold all of the methods and variables that surround a window
      */
@@ -79,10 +80,21 @@ public class Window {
         glfwSetWindowShouldClose(window, true);
     }
 
+    /**
+     * Getter for mouse button being pressed
+     *
+     * @param button The button being pressed
+     * @return Whether or not the mouse button is pressed
+     */
     public boolean isMouseButtonPressed(int button) {
         return glfwGetMouseButton(window, button) == GLFW_TRUE;
     }
 
+    /**
+     * Getter for the mouse position
+     *
+     * @return The current position of the mouse
+     */
     public Vector2f getMousePos() {
         double[] x = new double[1];
         double[] y = new double[1];

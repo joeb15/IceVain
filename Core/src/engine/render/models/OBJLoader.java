@@ -1,5 +1,6 @@
 package engine.render.models;
 
+import engine.render.textures.ModelTexture;
 import engine.utils.Loader;
 import engine.utils.VFS;
 import org.joml.Vector2f;
@@ -10,9 +11,18 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class OBJLoader {
 
+    public static HashMap<String, TexturedModel> texturedModelHashMap = new HashMap<>();
+
+    /**
+     * Loads all the information from a given file
+     *
+     * @param file The path of the file
+     * @return The <code>RawModel</code> representing this data
+     */
     public static RawModel loadModel(String file){
         File f = VFS.getFile(file);
         try {
@@ -77,6 +87,16 @@ public class OBJLoader {
         return null;
     }
 
+    /**
+     * Processes a vertex and puts it into its respective arrays
+     *
+     * @param vertexData The string array of data that contains the vertex, texture and normal pointers for a specific vertex
+     * @param indices The list of index data that has been parsed from the obj file
+     * @param textures The list of texture data that has been parsed from the obj file
+     * @param normals The list of normal data that has been parsed from the obj file
+     * @param texturesArray The float array that the texture data will be put into
+     * @param normalsArray The float array that the normal data will be put into
+     */
     private static void processVertex(String[] vertexData, ArrayList<Integer> indices, ArrayList<Vector2f> textures, ArrayList<Vector3f> normals, float[] texturesArray, float[] normalsArray){
         int currPointer = Integer.parseInt(vertexData[0])-1;
         indices.add(currPointer);
@@ -87,5 +107,60 @@ public class OBJLoader {
         normalsArray[currPointer*3] = currNorm.x;
         normalsArray[currPointer*3+1] = currNorm.y;
         normalsArray[currPointer*3+2] = currNorm.z;
+    }
+
+    /**
+     * Getter for the textured model associated with this entity name
+     *
+     * @param entityName The name of the entity as defined in the .ive files
+     * @return The <code>TexturedModel</code> associated with the given entity name
+     */
+    public static TexturedModel getTexturedModel(String entityName){
+        return texturedModelHashMap.get(entityName);
+    }
+
+    /**
+     * Loads all entities that are defined from .ive files within the /resources directory
+     */
+    public static void loadEntities() {
+        File[] iveFiles = VFS.getFilesWithStringRecursive(VFS.getFile("/resources/"), ".ive");
+        if(iveFiles==null)
+            return;
+        for(File iveFile:iveFiles) {
+            if (texturedModelHashMap == null)
+                texturedModelHashMap = new HashMap<>();
+            try {
+                BufferedReader bufferedReader = new BufferedReader(new FileReader(iveFile));
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    if (line.startsWith("#"))
+                        continue;
+                    String[] parts = line.split(" ");
+                    if (parts.length >= 3) {
+                        String name = parts[0];
+                        String model = parts[1];
+                        String texture = parts[2];
+                        RawModel rawModel = OBJLoader.loadModel(model);
+                        ModelTexture modelTexture = ModelTexture.get(texture);
+                        TexturedModel texturedModel = new TexturedModel(rawModel, modelTexture);
+                        for(int i=3;i<parts.length;i++){
+                            String[] attribs = parts[i].split(";",2);
+                            switch (attribs[0]){
+                                case "shine":
+                                    texturedModel.setShine(Float.parseFloat(attribs[1]));
+                                    break;
+                                case "reflectivity":
+                                    texturedModel.setReflectivity(Float.parseFloat(attribs[1]));
+                                    break;
+                            }
+                        }
+                        texturedModelHashMap.put(name, texturedModel);
+                    }
+                }
+                bufferedReader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

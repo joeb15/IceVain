@@ -1,5 +1,7 @@
 package engine.render.textures;
 
+import engine.utils.Config;
+import engine.utils.GlobalVars;
 import engine.utils.VFS;
 import org.lwjgl.BufferUtils;
 
@@ -12,6 +14,8 @@ import java.util.ArrayList;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
+import static org.lwjgl.opengl.GL14.GL_TEXTURE_LOD_BIAS;
+import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 import static org.lwjgl.opengles.GLES20.GL_TEXTURE0;
 
 public class Texture {
@@ -20,39 +24,20 @@ public class Texture {
 
     private int id, width, height;
 
+    /**
+     * Interfaces to an OpenGL texture
+     *
+     * @param path The path to the texture file
+     */
     public Texture(String path){
-        File file = VFS.getFile(path);
-        BufferedImage bi;
-        try {
-            bi = ImageIO.read(file);
-            width = bi.getWidth();
-            height = bi.getHeight();
-
-            int[] pixels = new int[width*height];
-            bi.getRGB(0,0,width,height,pixels, 0, width);
-            ByteBuffer byteBuffer = BufferUtils.createByteBuffer(height*width*4);
-            for(int y=0;y<height;y++){
-                for(int x=0;x<width;x++){
-                    int pixel = pixels[y*width+x];
-                    byteBuffer.put((byte)((pixel >> 16)&0xff));
-                    byteBuffer.put((byte)((pixel >>  8)&0xff));
-                    byteBuffer.put((byte)((pixel      )&0xff));
-                    byteBuffer.put((byte)((pixel >> 24)&0xff));
-                }
-            }
-            byteBuffer.flip();
-            id = glGenTextures();
-            textures.add(id);
-            glBindTexture(GL_TEXTURE_2D, id);
-            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, byteBuffer);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this(VFS.getFile(path));
     }
 
+    /**
+     * Interfaces to an OpenGL texture
+     *
+     * @param file The file of the texture
+     */
     public Texture(File file) {
         BufferedImage bi = null;
         try {
@@ -80,12 +65,16 @@ public class Texture {
         id = glGenTextures();
         textures.add(id);
         glBindTexture(GL_TEXTURE_2D, id);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, byteBuffer);
-
+        glGenerateMipmap(GL_TEXTURE_2D);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, Config.getFloat(GlobalVars.CFG_LOD_BIAS));
     }
 
+    /**
+     * Frees all allocated memory space
+     */
     public void cleanUp(){
         for(int i:textures)
             glDeleteTextures(i);

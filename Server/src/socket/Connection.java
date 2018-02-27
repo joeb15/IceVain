@@ -16,6 +16,13 @@ public class Connection {
     private long lastPinged;
     private Socket connectionToTheClient;
 
+    /**
+     * Creates an interface between the server and a client
+     *
+     * @param socketNumber The number of the socket
+     * @param connectionToTheClient The socket connecting to the client
+     * @param socketManager The socketManager to handle all of the sockets from the client
+     */
     public Connection(int socketNumber, Socket connectionToTheClient, SocketManager socketManager) {
         EventHandler.onEvent("clientConnected", new ClientConnectedEvent(connectionToTheClient, socketNumber));
         socketManager.addConnection(socketNumber);
@@ -80,11 +87,17 @@ public class Connection {
         }
     }
 
+    /**
+     * Terminates the connection between the client and server
+     */
     public void terminate(){
         serverReadThread.interrupt();
         running=false;
     }
 
+    /**
+     * Triggered on ping of a client to make sure they are all active
+     */
     public void ping() {
         lastPinged = System.currentTimeMillis();
     }

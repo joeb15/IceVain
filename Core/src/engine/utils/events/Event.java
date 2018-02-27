@@ -1,5 +1,6 @@
 package engine.utils.events;
 
-public abstract class Event {
-
-}
+/**
+ * An abstract class to represent any event that is sent from the event manager
+ */
+public abstract class Event {}

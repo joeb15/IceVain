@@ -24,6 +24,9 @@ public class GuiManager {
     private Vector2f[] lastDown;
     private int stringID = 0 ;
 
+    /**
+     * A managing class to handle all of the guis and components being used in the game
+     */
     public GuiManager(){
         guis = new CopyOnWriteArrayList<>();
         guiHash = new HashMap<>();
@@ -38,10 +41,20 @@ public class GuiManager {
         });
     }
 
+    /**
+     * Adds a gui to the render hash
+     *
+     * @param gui The gui to be added
+     */
     public void addGui(Gui gui){
         guis.add(gui);
     }
 
+    /**
+     * Getter for the gui hash that will be rendered
+     *
+     * @return The <code>HashMap</code> associated with the gui rendering hash
+     */
     public HashMap<Texture, ArrayList<Gui>> getGuiHash() {
         guiHash.clear();
         for(Gui gui:guis){
@@ -54,6 +67,9 @@ public class GuiManager {
         return guiHash;
     }
 
+    /**
+     * Handles all of the components of guis and manages their callback methods
+     */
     public void handleComponents(){
         for(Gui gui:guis){
             for(GuiComponent gc:gui.getComponents()){
@@ -86,7 +102,7 @@ public class GuiManager {
                     }
                 }else if(gc instanceof MouseReleasedComponent){
                     MouseReleasedComponent mouseReleasedComponent = (MouseReleasedComponent) gc;
-                    if(pressed[mouseReleasedComponent.getMouseButton()] && Utils.contains(mouseReleasedComponent, pos)){
+                    if(!pressed[mouseReleasedComponent.getMouseButton()] && Utils.contains(mouseReleasedComponent, pos)){
                         mouseReleasedComponent.onReleased(pos);
                     }
                 }else if(gc instanceof MouseJustPressedComponent){
@@ -104,11 +120,19 @@ public class GuiManager {
         }
     }
 
+    /**
+     * Clears all the guis and strings from the render hash
+     */
     public void clearGuis() {
         guis.clear();
         fontHash.clear();
     }
 
+    /**
+     * Removes a string given the ID that was given to it upon creation
+     *
+     * @param stringID The ID that is associated with the string
+     */
     public void removeString(int stringID){
         for(CopyOnWriteArrayList<CharacterWithPos> al:fontHash.values()){
             for(CharacterWithPos c:al){
@@ -118,6 +142,16 @@ public class GuiManager {
         }
     }
 
+    /**
+     * Adds a string to the render hash
+     *
+     * @param font The font to use
+     * @param text The text to render
+     * @param x The x position of the lower-left corner of the string
+     * @param y The y position of the lower-left corner of the string
+     * @param fontSize The size of the font to be used
+     * @return The stringID that will be used to modify this string
+     */
     public int addString(BitmapFont font, String text, float x, float y, float fontSize){
         float pointer = x;
         float ratio = fontSize/font.getFontSize();
@@ -146,6 +180,11 @@ public class GuiManager {
         return stringID++;
     }
 
+    /**
+     * Getter for the text rendering font hash
+     *
+     * @return The <code>HashMap</code> associated with the font rendering hash
+     */
     public HashMap<BitmapFont, CopyOnWriteArrayList<CharacterWithPos>> getFontHash() {
         return fontHash;
     }

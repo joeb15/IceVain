@@ -109,6 +109,16 @@ public class Config {
     }
 
     /**
+     *  Retrieves the value of a key in the config file
+     *
+     * @param   name    The name of the config value you want to read
+     * @return          The value of <code>name</code> in the config file
+     */
+    public static float getFloat(String name){
+        return Float.parseFloat(getString(name));
+    }
+
+    /**
      *  Retrieves a <code>BufferedWriter</code> object for the given config File
      *
      * @param   cfgFile The file that will be converted to a writing stream

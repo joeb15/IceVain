@@ -123,8 +123,8 @@ public class Keyboard {
         addKeyCallbackFromConfig(CFG_CONTROL_BACK, (d, wd)->{ if(d)camera.moveBackward();});
         addKeyCallbackFromConfig(CFG_CONTROL_LEFT, (d, wd)->{ if(d)camera.strafeLeft();});
         addKeyCallbackFromConfig(CFG_CONTROL_RIGHT, (d, wd)->{ if(d)camera.strafeRight();});
-        addKeyCallbackFromConfig(CFG_CONTROL_UP, (d, wd)->{ if(d)camera.move(0,-camera.getSpeed(), 0);});
-        addKeyCallbackFromConfig(CFG_CONTROL_DOWN, (d, wd)->{ if(d)camera.move(0,camera.getSpeed(), 0);});
+        addKeyCallbackFromConfig(CFG_CONTROL_UP, (d, wd)->{ if(d)camera.move(0,camera.getSpeed(), 0);});
+        addKeyCallbackFromConfig(CFG_CONTROL_DOWN, (d, wd)->{ if(d)camera.move(0,-camera.getSpeed(), 0);});
         addKeyCallbackFromConfig(CFG_CONTROL_LOOK_LEFT, (d, wd)->{ if(d)camera.rotate(0,camera.getRotationSpeed(),0);});
         addKeyCallbackFromConfig(CFG_CONTROL_LOOK_RIGHT, (d, wd)->{ if(d)camera.rotate(0,-camera.getRotationSpeed(),0);});
         addKeyCallbackFromConfig(CFG_CONTROL_EXIT, (d, wd)->{ if(wd&&!d)window.close();});

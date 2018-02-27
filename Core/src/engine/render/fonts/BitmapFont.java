@@ -22,6 +22,11 @@ public class BitmapFont {
         this(VFS.getFile(fontFile));
     }
 
+    /**
+     * Loads a BitmapFont for rendering
+     *
+     * @param fontFile the file to
+     */
     public BitmapFont(File fontFile){
         try {
             int currKernNum = 0;
@@ -147,6 +152,13 @@ public class BitmapFont {
         }
     }
 
+    /**
+     * Gets the width of a String of text
+     *
+     * @param text The text to get the width of
+     * @param fontSize The size of the font that the text will be drawn with
+     * @return The width of the text in pixels
+     */
     public float getWidth(String text, float fontSize){
         int pointer = 0;
         int lastAdv = 0;
@@ -161,22 +173,49 @@ public class BitmapFont {
         return pointer * fontSize / this.fontSize;
     }
 
+    /**
+     * Gets the images for each page
+     *
+     * @return The <code>Texture[]</code> representing the page images
+     */
     public Texture[] getPageImages() {
         return pageImages;
     }
 
+    /**
+     * Gets the character with a given character code
+     *
+     * @param character The character code of the character to retrieve
+     * @return The <code>BitmapChar</code> representation of the character
+     */
     public BitmapChar getChar(int character) {
         return bitmapChars.get(character);
     }
 
+    /**
+     * Getter for the font size
+     *
+     * @return The default font size of the <code>BitmapFont</code>
+     */
     public int getFontSize() {
         return fontSize;
     }
 
+    /**
+     * Getter for the character height
+     *
+     * @return The default font height of the <code>BitmapFont</code>
+     */
     public float getCharHeight() {
         return lineHeight;
     }
 
+    /**
+     * Getter for the character height of a specific font size
+     *
+     * @param fontSize The font size to be used for sampling
+     * @return The character height for that font size
+     */
     public float getCharHeight(float fontSize) {
         return lineHeight*fontSize/this.fontSize;
     }

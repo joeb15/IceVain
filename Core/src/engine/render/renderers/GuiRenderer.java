@@ -23,6 +23,11 @@ public class GuiRenderer{
     private GuiManager guiManager;
     private Matrix4f viewMatrix;
 
+    /**
+     * Renderer for all of the guis
+     *
+     * @param guiManager The guiManager to handle all of the guis
+     */
     public GuiRenderer(GuiManager guiManager){
         shader = new GuiShader();
         this.guiManager=guiManager;
@@ -31,6 +36,9 @@ public class GuiRenderer{
         viewMatrix = new Matrix4f().ortho2D(0,w,0,h);
     }
 
+    /**
+     * Renders all of the guis to the screen
+     */
     public void render(){
         shader.bind();
         RawModel rawModel = Gui.getRect();
@@ -53,6 +61,9 @@ public class GuiRenderer{
         shader.unbind();
     }
 
+    /**
+     * Frees up all allocated memory
+     */
     public void cleanUp(){
         shader.cleanUp();
     }

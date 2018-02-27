@@ -10,6 +10,11 @@ import static engine.utils.GlobalVars.*;
 
 public class Server {
 
+    /**
+     * The main method for the server
+     *
+     * @param args The command line arguments
+     */
     @SuppressWarnings("InfiniteLoopStatement")
     public static void main(String[] args){
         SocketManager socketManager = new SocketManager();

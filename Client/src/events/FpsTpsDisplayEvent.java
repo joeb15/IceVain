@@ -4,9 +4,15 @@ import engine.utils.events.Event;
 
 public class FpsTpsDisplayEvent extends Event{
 
-    public int fps, tps;
+    public float fps;
+    public float tps;
 
-    public FpsTpsDisplayEvent(int fps, int tps) {
+    /**
+     * The event that is created in order to update the game about the current fps and tps
+     * @param fps the current frames per second
+     * @param tps the curremt ticks per second
+     */
+    public FpsTpsDisplayEvent(float fps, float tps) {
         this.fps = fps;
         this.tps = tps;
     }
