@@ -79,7 +79,6 @@ public class Client {
      */
     private void initialize(){
         camera = new Camera();
-        camera.move(-40, 0,-40);
         Timer.runAsSideProcess(()->{
             VFS.initializeVirtualSystems();
             GlobalVars.loadAllVariables();
@@ -94,6 +93,7 @@ public class Client {
         glEnable(GL_TEXTURE_2D);
         glEnable(GL_DEPTH_TEST);
         world = new World(new Random().nextLong()+"");
+        camera.move(40, world.getHeight(40,40)+2,40);
         guiManager = new GuiManager();
         socketManager = new SocketManager();
         socketManager.addInterface(SOCKET_PING,(msg, socketNum)-> socketManager.pushMessage(SOCKET_PING,"pong"));

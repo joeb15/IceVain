@@ -28,7 +28,7 @@ public class Chunk {
     public Chunk(WorldGenerator worldGenerator, int x, int y) {
         for(int i=0;i<CHUNK_SIZE_PLUS_ONE;i++){
             for(int j=0;j<CHUNK_SIZE_PLUS_ONE;j++){
-                float zNorm = worldGenerator.getSmoothedHeight(Integer.MAX_VALUE/2 + x*CHUNK_SIZE+i, Integer.MAX_VALUE/2 + y*CHUNK_SIZE+j);
+                float zNorm = worldGenerator.getSmoothedHeight( x*CHUNK_SIZE+i, y*CHUNK_SIZE+j);
                 heights[j][i]=zNorm*CHUNK_HEIGHT;
 
                 vertices[(j * CHUNK_SIZE_PLUS_ONE + i) * 3] = x * CHUNK_SIZE + i;

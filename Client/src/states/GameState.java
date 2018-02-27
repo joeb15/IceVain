@@ -55,7 +55,7 @@ public class GameState extends State {
      * Adds random entities to the world for testing
      */
     private void addEntities(){
-        world.addLight(new Light(new Vector3f(36, world.getHeight(36, 20), 20), new Vector3f(1,1,1), new Vector3f(1,-0.01f,0)));
+        world.addLight(new Light(new Vector3f(36, world.getHeight(36, 20), 20), new Vector3f(1,1,1), new Vector3f(1,0,-0.00001f)));
         world.addEntity(new Entity(OBJLoader.getTexturedModel("Pine_stump_1"), new Vector3f(36, world.getHeight(36, 20), 20), new Vector3f(), new Vector3f(1,1,1)));
         String[] models = {
             "_1","_2","_3","_snow_1","_snow_2","_snow_3","_stump_1","_stump_2"

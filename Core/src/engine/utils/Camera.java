@@ -13,14 +13,14 @@ public class Camera {
     private float pitch = 0f;
     private float yaw = 0f;
     private float roll = 0f;
-
+    private Vector3f negatedPos = new Vector3f();
     private static final float degToRad = 0.017453293f;
 
     /**
      * Creates a camera instance to keep track of the players view
      */
     public Camera(){
-        projection = new Matrix4f().perspective(70, 1280f/720f, 1f, 100);
+        projection = new Matrix4f().perspective(70, 1280f/720f, 1f, 1000f);
         position = new Vector3f();
     }
 
@@ -53,8 +53,8 @@ public class Camera {
         viewMatrix.rotate(-pitch*degToRad,1,0,0);
         viewMatrix.rotate(-yaw*degToRad,0,1,0);
         viewMatrix.rotate(-roll*degToRad,0,0,1);
-        viewMatrix.translate(position.negate(), viewMatrix);
-        position.negate();
+        position.negate(negatedPos);
+        viewMatrix.translate(negatedPos, viewMatrix);
         return viewMatrix;
     }
 
