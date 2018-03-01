@@ -1,6 +1,7 @@
 package engine.render.textures;
 
 import engine.utils.Config;
+import engine.utils.Debug;
 import engine.utils.GlobalVars;
 import engine.utils.VFS;
 import org.lwjgl.BufferUtils;
@@ -11,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
@@ -21,8 +23,10 @@ import static org.lwjgl.opengles.GLES20.GL_TEXTURE0;
 public class Texture {
 
     private static ArrayList<Integer> textures = new ArrayList<>();
+    private static HashMap<String, Texture> textureHashMap = new HashMap<>();
 
     private int id, width, height;
+    private String path;
 
     /**
      * Interfaces to an OpenGL texture
@@ -31,6 +35,9 @@ public class Texture {
      */
     public Texture(String path){
         this(VFS.getFile(path));
+        Debug.log("Loading "+path);
+        this.path = path;
+        textureHashMap.put(path, this);
     }
 
     /**
@@ -38,7 +45,7 @@ public class Texture {
      *
      * @param file The file of the texture
      */
-    public Texture(File file) {
+    private Texture(File file) {
         BufferedImage bi = null;
         try {
             bi = ImageIO.read(file);
@@ -93,5 +100,27 @@ public class Texture {
      */
     public void unbind(){
         glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    /**
+     * Getter for a texture with a path
+     *
+     * @param texture The path of the texture
+     * @return The texture located at that path
+     */
+    public static Texture getTexture(String texture) {
+        if(!textureHashMap.containsKey(texture)) {
+            return new Texture(texture);
+        }
+        return textureHashMap.get(texture);
+    }
+
+    /**
+     * Gets the path of the texture
+     *
+     * @return The string path of the texture
+     */
+    public String getPath() {
+        return path;
     }
 }

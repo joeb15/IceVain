@@ -2,6 +2,7 @@ package engine.world;
 
 import engine.entities.Entity;
 import engine.entities.Light;
+import engine.render.models.MaterialLibrary;
 import org.joml.Vector2i;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ public class World {
     private ArrayList<Entity> entities;
     private ArrayList<Light> lights;
     private WorldGenerator worldGenerator;
+    private MaterialLibrary materialLibrary;
 
     private HashMap<Vector2i, Chunk> chunkHashMap;
     private HashMap<Vector2i, Thread> chunkThreads;
@@ -24,6 +26,7 @@ public class World {
      * @param seed The seed to use when generating the new world
      */
     public World(String seed) {
+        materialLibrary = MaterialLibrary.createDefault();
         worldGenerator = new WorldGenerator(seed);
         lights = new ArrayList<>();
         entities = new ArrayList<>();
@@ -123,5 +126,14 @@ public class World {
         if(c==null)
             return 0;
         return c.getHeight(x%CHUNK_SIZE, y%CHUNK_SIZE);
+    }
+
+    /**
+     * Getter for the material library for the world
+     *
+     * @return The material library for the world
+     */
+    public MaterialLibrary getMaterialLibrary() {
+        return materialLibrary;
     }
 }

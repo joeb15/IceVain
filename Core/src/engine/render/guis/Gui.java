@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class Gui {
 
-    private static RawModel rect = Loader.loadToVAO(new float[]{0,1,0,1,1,0,0,0,0,1,0,0},new float[]{0,0,-1,0,0,-1,0,0,-1,0,0,-1},new float[]{0,0,1,0,0,1,1,1},new int[]{3,1,2,2,1,0});
+    private static RawModel rect = Loader.loadToVAO(new float[]{0,1,0,1,1,0,0,0,0,1,0,0},new float[]{0,0,-1,0,0,-1,0,0,-1,0,0,-1}, new float[]{0,1,0,0,1,0,0,1,0,0,1,0},new float[]{0,0,1,0,0,1,1,1},new int[]{3,1,2,2,1,0}, new int[]{0,0,0,0});
 
     private Vector2f pos, size;
     private Matrix4f transformationMatrix = new Matrix4f();

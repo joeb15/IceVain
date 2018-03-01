@@ -12,7 +12,9 @@ public class Chunk {
     private float[] vertices = new float[CHUNK_SIZE_PLUS_ONE*CHUNK_SIZE_PLUS_ONE*3];
     private float[] textures = new float[CHUNK_SIZE_PLUS_ONE*CHUNK_SIZE_PLUS_ONE*2];
     private float[] normals = new float[CHUNK_SIZE_PLUS_ONE*CHUNK_SIZE_PLUS_ONE*3];
+    private float[] tangents = new float[CHUNK_SIZE_PLUS_ONE*CHUNK_SIZE_PLUS_ONE*3];
     private int[] indices = new int[(CHUNK_SIZE)*(CHUNK_SIZE)*6];
+    private int[] materials = new int[CHUNK_SIZE_PLUS_ONE*CHUNK_SIZE_PLUS_ONE];
 
     private float[][] heights = new float[CHUNK_SIZE_PLUS_ONE][CHUNK_SIZE_PLUS_ONE];
 
@@ -41,6 +43,12 @@ public class Chunk {
                 normals[(j * CHUNK_SIZE_PLUS_ONE + i) * 3] = 0;
                 normals[(j * CHUNK_SIZE_PLUS_ONE + i) * 3 + 1] = 1;
                 normals[(j * CHUNK_SIZE_PLUS_ONE + i) * 3 + 2] = 0;
+
+                tangents[(j * CHUNK_SIZE_PLUS_ONE + i) * 3] = 1;
+                tangents[(j * CHUNK_SIZE_PLUS_ONE + i) * 3 + 1] = 0;
+                tangents[(j * CHUNK_SIZE_PLUS_ONE + i) * 3 + 2] = 0;
+
+                materials[(j* CHUNK_SIZE_PLUS_ONE + i )] = 0;
             }
         }
         int index=0;
@@ -63,7 +71,7 @@ public class Chunk {
      */
     public RawModel getModel() {
         if(rawModel==null)
-            rawModel = Loader.loadToVAO(vertices, normals, textures, indices);
+            rawModel = Loader.loadToVAO(vertices, normals, tangents, textures, indices, materials);
         return rawModel;
     }
 
@@ -77,4 +85,5 @@ public class Chunk {
     public float getHeight(int x, int y) {
         return heights[y][x];
     }
+
 }

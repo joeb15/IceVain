@@ -74,6 +74,8 @@ public class GameState extends State {
             world.addEntity(tree2);
             world.addEntity(tree3);
         }
+        Entity bunk_bed = new Entity(OBJLoader.getTexturedModel("Bed_bunk"), new Vector3f(30,world.getHeight(30,20)+2,20), new Vector3f(), new Vector3f(1,1,1));
+        world.addEntity(bunk_bed);
     }
 
     /**

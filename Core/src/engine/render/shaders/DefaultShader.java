@@ -1,19 +1,24 @@
 package engine.render.shaders;
 
 import engine.entities.Light;
+import engine.render.models.Material;
+import engine.render.models.MaterialLibrary;
 import engine.utils.Camera;
 import engine.utils.VFS;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class DefaultShader extends Shader{
 
     private static final int MAX_LIGHTS = 10;
+    private static final int MAX_MATERIALS = 8;
 
-    Uniform viewMatrix, projectionMatrix, textureSample, transformationMatrix, ambient, shineDamper, reflectivity;
+    Uniform viewMatrix, projectionMatrix, transformationMatrix, ambient;
     UniformStruct[] lights;
+    Uniform[] specularExponent, reflectivity, ambientMult, diffuseMult, specularMult, textureSample, normalSample, specularSample;
 
     /**
      * Loads the default shader files
@@ -80,25 +85,16 @@ public class DefaultShader extends Shader{
      * Loads the texture to the shader
      */
     public void loadTexture(){
-        textureSample.load(0);
-    }
-
-    /**
-     * Loads the shine attributes to the shader
-     *
-     * @param shineDamper The shine dampening factor associated with the model
-     * @param reflectivity The reflectivity value for the model
-     */
-    public void loadShineAttribs(float shineDamper, float reflectivity){
-        this.shineDamper.loadFloat(shineDamper);
-        this.reflectivity.loadFloat(reflectivity);
+        for(int i=0;i<MAX_MATERIALS;i++) {
+            textureSample[i].load(i);
+            normalSample[i].load(i+MAX_MATERIALS);
+        }
     }
 
     /**
      * Loads all uniform locations when loading the shader
      */
     public void getUniformLocations() {
-        textureSample = getUniform("textureSample");
         viewMatrix = getUniform("viewMatrix");
         projectionMatrix = getUniform("projectionMatrix");
         transformationMatrix = getUniform("transformationMatrix");
@@ -107,8 +103,24 @@ public class DefaultShader extends Shader{
         for(int i=0;i<MAX_LIGHTS;i++){
             lights[i] = getUniform("lights["+i+"]", "position","color", "attenuation");
         }
-        shineDamper = getUniform("shineDamper");
-        reflectivity = getUniform("reflectivity");
+        textureSample = new Uniform[MAX_MATERIALS];
+        normalSample = new Uniform[MAX_MATERIALS];
+        specularSample = new Uniform[MAX_MATERIALS];
+        specularExponent = new Uniform[MAX_MATERIALS];
+        reflectivity = new Uniform[MAX_MATERIALS];
+        ambientMult = new Uniform[MAX_MATERIALS];
+        diffuseMult = new Uniform[MAX_MATERIALS];
+        specularMult = new Uniform[MAX_MATERIALS];
+        for(int i=0;i<MAX_MATERIALS;i++) {
+            textureSample[i] = getUniform("textureSample["+i+"]");
+            normalSample[i] = getUniform("normalSample["+i+"]");
+            specularSample[i] = getUniform("specularSample["+i+"]");
+            specularExponent[i] = getUniform("specularExponent[" + i + "]");
+            reflectivity[i] = getUniform("reflectivity[" + i + "]");
+            ambientMult[i] = getUniform("ambientMult[" + i + "]");
+            diffuseMult[i] = getUniform("diffuseMult[" + i + "]");
+            specularMult[i] = getUniform("specularMult[" + i + "]");
+        }
     }
 
     /**
@@ -119,5 +131,42 @@ public class DefaultShader extends Shader{
         bindAttribute(0, "position");
         bindAttribute(1, "textureCoords");
         bindAttribute(2, "normal");
+        bindAttribute(3, "material");
+        bindAttribute(4, "tangent");
+    }
+
+    /**
+     * Loads a material library to the shader
+     *
+     * @param materialLibrary The material library to load
+     */
+    public void loadMaterialLibrary(MaterialLibrary materialLibrary) {
+        assert materialLibrary!=null;
+
+        materialLibrary.bindTextures();
+        materialLibrary.bindNormals(MAX_MATERIALS);
+        materialLibrary.bindSpecular(MAX_MATERIALS*2);
+        Collection<Material> materials = materialLibrary.getMaterials();
+        for(Material m:materials){
+            loadMaterial(m.id, m);
+        }
+        if(materials.size()==0){
+            loadMaterial(0, Material.getDefaultMaterial());
+        }
+    }
+
+    /**
+     * Helper method to load a single material to the shader
+     *
+     * @param i The index of the material
+     * @param material The material to use
+     */
+    private void loadMaterial(int i, Material material) {
+        assert i<MAX_MATERIALS;
+        specularExponent[i].loadFloat(material.specularExponent);
+        reflectivity[i].loadFloat(1f);
+        ambientMult[i].loadVector(material.ambientMultiplier);
+        diffuseMult[i].loadVector(material.diffuseMultiplier);
+        specularMult[i].loadVector(material.specularMultiplier);
     }
 }

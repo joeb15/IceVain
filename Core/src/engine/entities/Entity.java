@@ -2,7 +2,7 @@ package engine.entities;
 
 import engine.render.models.RawModel;
 import engine.render.models.TexturedModel;
-import engine.render.textures.ModelTexture;
+import engine.render.textures.Texture;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -36,7 +36,7 @@ public class Entity {
      * @param rot The initial rotation of the entity instance
      * @param scl The initial scale of the entity instance
      */
-    public Entity(RawModel rawModel, ModelTexture texture, Vector3f pos, Vector3f rot, Vector3f scl){
+    public Entity(RawModel rawModel, Texture texture, Vector3f pos, Vector3f rot, Vector3f scl){
         this(new TexturedModel(rawModel, texture), pos, rot, scl);
     }
 

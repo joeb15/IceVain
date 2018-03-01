@@ -68,7 +68,7 @@ public class BitmapFont {
                         else if(components[0].equals("file"))
                             file = components[1].substring(1, components[1].length()-1);
                     }
-                    pageImages[pageNum] = new Texture(VFS.getFileInSameFolder(fontFile, file));
+                    pageImages[pageNum] = new Texture(VFS.getFileStringInSameFolder(fontFile, file));
                 }else if(line.startsWith("chars count")){
                     for(String part:parts){
                         String[] components = part.split("=");

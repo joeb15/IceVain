@@ -185,4 +185,24 @@ public class VFS {
         }
         return contains;
     }
+
+    /**
+     * Attempts to get the shortened path of a file in the same folder as
+     *
+     * @param file The file that is in the main folder
+     * @param otherFile The file to look for
+     * @return The shortest path describing the other file
+     */
+    public static String getFileStringInSameFolder(File file, String otherFile) {
+        String filePath = VFS.getFileInSameFolder(file, otherFile).getPath();
+        String shortestFilePath = filePath;
+        for(String realPath:virtualSystems.keySet()){
+            if(filePath.startsWith(realPath)){
+                String currPath = filePath.replaceFirst(realPath, virtualSystems.get(realPath).get(0));
+                if(currPath.length()<shortestFilePath.length())
+                    shortestFilePath = currPath;
+            }
+        }
+        return shortestFilePath;
+    }
 }

@@ -8,6 +8,7 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
+import static org.lwjgl.opengl.GL11.GL_INT;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.*;
@@ -22,16 +23,20 @@ public class Loader {
      *
      * @param positions The <code>float[]</code> of positions
      * @param normals The <code>float[]</code> of normals
+     * @param tangents The <code>float[]</code> of tangents
      * @param textureCoords The <code>float[]</code> of texture coordinates
      * @param indicies The <code>int[]</code> of indices
+     * @param materialsArray The <code>int[]</code> of materials
      * @return The model represented as a <code>RawModel</code>
      */
-    public static RawModel loadToVAO(float[] positions, float[] normals, float[] textureCoords, int[] indicies){
+    public static RawModel loadToVAO(float[] positions, float[] normals, float[] tangents, float[] textureCoords, int[] indicies, int[] materialsArray){
         int vaoID = createVAO();
         bindIndicesBuffer(indicies);
         storeDataInAttributeList(0, positions, 3);
         storeDataInAttributeList(1, textureCoords, 2);
         storeDataInAttributeList(2, normals, 3);
+        storeDataInAttributeList(3, materialsArray, 1);
+        storeDataInAttributeList(4, tangents, 3);
         unbindVAO();
         return new RawModel(vaoID, indicies.length);
     }
@@ -73,6 +78,22 @@ public class Loader {
         glBindBuffer(GL_ARRAY_BUFFER, vboID);
         glBufferData(GL_ARRAY_BUFFER, createBuffer(data), GL_STATIC_DRAW);
         glVertexAttribPointer(attributeNumber, size, GL_FLOAT, false, 0, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+
+    /**
+     * Stores data in an attribute array to use in the shaders
+     *
+     * @param attributeNumber The attribute to store the data in
+     * @param data The <code>int[]</code> with all of the data
+     * @param size The size of each bit of data i.e. <code>Vector3i</code> has a size of 3
+     */
+    private static void storeDataInAttributeList(int attributeNumber, int[] data, int size){
+        int vboID = glGenBuffers();
+        vbos.add(vboID);
+        glBindBuffer(GL_ARRAY_BUFFER, vboID);
+        glBufferData(GL_ARRAY_BUFFER, createBuffer(data), GL_STATIC_DRAW);
+        glVertexAttribPointer(attributeNumber, size, GL_INT, false, 0, 0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 

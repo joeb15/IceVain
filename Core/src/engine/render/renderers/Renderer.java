@@ -4,7 +4,7 @@ import engine.entities.Entity;
 import engine.render.models.RawModel;
 import engine.render.models.TexturedModel;
 import engine.render.shaders.DefaultShader;
-import engine.render.textures.ModelTexture;
+import engine.render.textures.Texture;
 import engine.utils.Camera;
 import engine.world.Chunk;
 import engine.world.World;
@@ -84,10 +84,10 @@ public class Renderer {
      * Renders the world
      */
     public void renderWorld(){
-        ModelTexture modelTexture = ModelTexture.get("/resources/grass.jpg");
-        modelTexture.getTexture().bind(0);
+        Texture modelTexture = Texture.getTexture("/resources/grass.jpg");
+        modelTexture.bind(0);
         shader.loadTransformationMatrix(new Matrix4f());
-        shader.loadShineAttribs(10, .1f);
+        shader.loadMaterialLibrary(world.getMaterialLibrary());
         for(int i=0;i<10;i++){
             for(int j=0;j<10;j++) {
                 Chunk chunk = world.getChunk(i, j);
@@ -118,8 +118,7 @@ public class Renderer {
             glBindVertexArray(model.getVaoId());
             for(int i:shader.attribs)
                 glEnableVertexAttribArray(i);
-            texturedModel.getTexture().getTexture().bind(0);
-            shader.loadShineAttribs(texturedModel.getShine(), texturedModel.getReflectivity());
+            shader.loadMaterialLibrary(texturedModel.getMaterialLibrary());
             for(Entity entity:entityHashMap.get(texturedModel)) {
                 shader.loadTransformationMatrix(entity.getTransformationMatrix());
                 glDrawElements(GL_TRIANGLES, model.getVertexCount(), GL_UNSIGNED_INT, 0);
