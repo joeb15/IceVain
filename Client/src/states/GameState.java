@@ -7,6 +7,7 @@ import engine.render.guis.GuiManager;
 import engine.render.models.ModelLoader;
 import engine.utils.Config;
 import engine.utils.GlobalVars;
+import engine.utils.Timer;
 import engine.utils.events.EventHandler;
 import engine.utils.states.State;
 import engine.world.World;
@@ -60,22 +61,27 @@ public class GameState extends State {
             "_1","_2","_3","_snow_1","_snow_2","_snow_3","_stump_1","_stump_2"
         };
 
-//        for(int i=0;i<models.length;i++){
-//            Entity tree1 = new Entity(ModelLoader.getTexturedModel("Pine"+models[i]), new Vector3f(i*8+8, world.getHeight(i*8+8, 12), 12), new Vector3f(), new Vector3f(1,1,1));
-//            Entity tree2 = new Entity(ModelLoader.getTexturedModel("Evergreen"+models[i]), new Vector3f(i*8+8, world.getHeight(i*8+8, 20), 20), new Vector3f(), new Vector3f(1,1,1));
-//            Entity tree3 = new Entity(ModelLoader.getTexturedModel("Rainbow"+models[i]), new Vector3f(i*8+8, world.getHeight(i*8+8, 28), 28), new Vector3f(), new Vector3f(1,1,1));
-//            Timer.createTimer(()->{
-//                tree1.rotate(0,.01f,0);
-//                tree2.rotate(0,.01f,0);
-//                tree3.rotate(0,.01f,0);
-//            }, 1000/60f, -1);
-//            world.addEntity(tree1);
-//            world.addEntity(tree2);
-//            world.addEntity(tree3);
-//        }
+        for(int i=0;i<models.length;i++){
+            Entity tree1 = new Entity(ModelLoader.getTexturedModel("Pine"+models[i]), new Vector3f(i*8+8, world.getHeight(i*8+8, 12), 12), new Vector3f(), new Vector3f(1,1,1));
+            Entity tree2 = new Entity(ModelLoader.getTexturedModel("Evergreen"+models[i]), new Vector3f(i*8+8, world.getHeight(i*8+8, 20), 20), new Vector3f(), new Vector3f(1,1,1));
+            Entity tree3 = new Entity(ModelLoader.getTexturedModel("Rainbow"+models[i]), new Vector3f(i*8+8, world.getHeight(i*8+8, 28), 28), new Vector3f(), new Vector3f(1,1,1));
+            Timer.createTimer(()->{
+                tree1.rotate(0,.01f,0);
+                tree2.rotate(0,.01f,0);
+                tree3.rotate(0,.01f,0);
+            }, 1000/60f, -1);
+            world.addEntity(tree1);
+            world.addEntity(tree2);
+            world.addEntity(tree3);
+        }
 
         Entity bunk_bed = new Entity(ModelLoader.getTexturedModel("Barrel"), new Vector3f(30,world.getHeight(30,20),20), new Vector3f(), new Vector3f(1,1,1));
         world.addEntity(bunk_bed);
+        Entity stump = new Entity(ModelLoader.getTexturedModel("Rainbow_stump_2"), new Vector3f(20.5f, world.getHeight(20.5f, 20.5f), 20.5f), new Vector3f(), new Vector3f(1,1,1));
+        world.addEntity(stump);
+        Timer.createTimer(()->{
+            bunk_bed.rotate(0,.01f,0);
+        }, 1000/60f, -1);
     }
 
     /**

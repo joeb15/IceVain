@@ -8,7 +8,7 @@ import org.joml.Vector2i;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static engine.world.Chunk.CHUNK_SIZE;
+import static engine.world.Chunk.CHUNK_HEIGHT;
 
 public class World {
 
@@ -122,13 +122,8 @@ public class World {
      * @param y The y-coordinate of the sample
      * @return The height of the sample point as a float between 0 and <code>Chunk.CHUNK_HEIGHT</code>
      */
-    public float getHeight(int x, int y) {
-        int chunkX = x / CHUNK_SIZE;
-        int chunkY = y / CHUNK_SIZE;
-        Chunk c = chunkHashMap.get(new Vector2i(chunkX, chunkY));
-        if(c==null)
-            return 0;
-        return c.getHeight(x%CHUNK_SIZE, y%CHUNK_SIZE);
+    public float getHeight(float x, float y) {
+        return worldGenerator.getRealisticHeight(x, y)*CHUNK_HEIGHT;
     }
 
     /**
