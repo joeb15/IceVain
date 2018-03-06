@@ -1,6 +1,6 @@
 import engine.render.Window;
 import engine.render.guis.GuiManager;
-import engine.render.models.OBJLoader;
+import engine.render.models.ModelLoader;
 import engine.render.renderers.MasterRenderer;
 import engine.sockets.SocketManager;
 import engine.utils.*;
@@ -54,7 +54,7 @@ public class Client {
             fps=0;tps=0;
             }, 1000f/fpsTpsUpdatesPerSecond, -1);
 
-        OBJLoader.loadEntities();
+        ModelLoader.loadEntities();
 
         while(!window.shouldClose()){
             Timer.tick();

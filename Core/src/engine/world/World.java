@@ -27,6 +27,9 @@ public class World {
      */
     public World(String seed) {
         materialLibrary = MaterialLibrary.createDefault();
+        materialLibrary.getMaterial(0).diffuseTexture = "/resources/cobblestone/diffuse.png";
+        materialLibrary.getMaterial(0).normalTexture = "/resources/cobblestone/normal.png";
+        materialLibrary.getMaterial(0).specularTexture = "/resources/cobblestone/specular.png";
         worldGenerator = new WorldGenerator(seed);
         lights = new ArrayList<>();
         entities = new ArrayList<>();

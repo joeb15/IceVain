@@ -1,7 +1,6 @@
 package engine.render.textures;
 
 import engine.utils.Config;
-import engine.utils.Debug;
 import engine.utils.GlobalVars;
 import engine.utils.VFS;
 import org.lwjgl.BufferUtils;
@@ -35,7 +34,6 @@ public class Texture {
      */
     public Texture(String path){
         this(VFS.getFile(path));
-        Debug.log("Loading "+path);
         this.path = path;
         textureHashMap.put(path, this);
     }

@@ -4,7 +4,6 @@ import engine.entities.Entity;
 import engine.render.models.RawModel;
 import engine.render.models.TexturedModel;
 import engine.render.shaders.DefaultShader;
-import engine.render.textures.Texture;
 import engine.utils.Camera;
 import engine.world.Chunk;
 import engine.world.World;
@@ -84,8 +83,6 @@ public class Renderer {
      * Renders the world
      */
     public void renderWorld(){
-        Texture modelTexture = Texture.getTexture("/resources/grass.jpg");
-        modelTexture.bind(0);
         shader.loadTransformationMatrix(new Matrix4f());
         shader.loadMaterialLibrary(world.getMaterialLibrary());
         for(int i=0;i<10;i++){
