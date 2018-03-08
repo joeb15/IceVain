@@ -5,9 +5,7 @@ import engine.render.models.RawModel;
 import engine.render.models.TexturedModel;
 import engine.render.shaders.DefaultShader;
 import engine.utils.Camera;
-import engine.world.Chunk;
 import engine.world.World;
-import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -26,7 +24,7 @@ public class Renderer {
     private World world;
 
     /**
-     * Renders the world and entities
+     * Renders the  entities
      *
      * @param world The world to render
      * @param camera The camera to use for the view matrix
@@ -39,8 +37,6 @@ public class Renderer {
         shader.loadTexture();
         shader.unbind();
         this.world=world;
-        glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
     }
 
     /**
@@ -48,7 +44,6 @@ public class Renderer {
      */
     public void render(){
         prepare();
-        renderWorld();
         renderEntities();
         shader.unbind();
     }
@@ -57,7 +52,6 @@ public class Renderer {
      * Prepares the shader and entity hash for rendering
      */
     public void prepare(){
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         entityHashMap.clear();
         for(Entity e:world.getEntities())
             addEntity(e);
@@ -77,33 +71,6 @@ public class Renderer {
         if(!entityHashMap.containsKey(texturedModel))
             entityHashMap.put(texturedModel, new ArrayList<>());
         entityHashMap.get(texturedModel).add(entity);
-    }
-
-    /**
-     * Renders the world
-     */
-    public void renderWorld(){
-        shader.loadTransformationMatrix(new Matrix4f());
-        shader.loadMaterialLibrary(world.getMaterialLibrary());
-        for(int i=0;i<10;i++){
-            for(int j=0;j<10;j++) {
-                Chunk chunk = world.getChunk(i, j);
-                if(chunk!=null) {
-                    RawModel rawModel = chunk.getModel();
-                    glBindVertexArray(rawModel.getVaoId());
-
-                    for (int c : shader.attribs)
-                        glEnableVertexAttribArray(c);
-
-                    glDrawElements(GL_TRIANGLES, rawModel.getVertexCount(), GL_UNSIGNED_INT, 0);
-
-                    for (int c : shader.attribs)
-                        glDisableVertexAttribArray(c);
-
-                    glBindVertexArray(0);
-                }
-            }
-        }
     }
 
     /**
