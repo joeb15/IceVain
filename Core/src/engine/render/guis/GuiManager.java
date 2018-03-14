@@ -2,8 +2,10 @@ package engine.render.guis;
 
 import engine.render.fonts.BitmapFont;
 import engine.render.fonts.CharacterWithPos;
+import engine.render.framebuffers.FrameBuffer;
 import engine.render.guis.components.*;
 import engine.render.textures.Texture;
+import engine.utils.Config;
 import engine.utils.Utils;
 import engine.utils.peripherals.Mouse;
 import org.joml.Vector2f;
@@ -12,11 +14,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static engine.utils.GlobalVars.CFG_FRAME_HEIGHT;
+import static engine.utils.GlobalVars.CFG_FRAME_WIDTH;
+
 public class GuiManager {
+
+    private FrameBuffer worldFrameBuffer;
+    private FrameBuffer idFrameBuffer;
 
     private HashMap<Texture, ArrayList<Gui>> guiHash;
     private HashMap<BitmapFont, CopyOnWriteArrayList<CharacterWithPos>> fontHash = new HashMap<>();
-    private CopyOnWriteArrayList<Gui> guis;
+    private HashMap<Integer, CopyOnWriteArrayList<Gui>> guis;
     private boolean[] pressed = new boolean[8];
     private boolean[] wasPressed = new boolean[8];
     private Vector2f pos = new Vector2f();
@@ -28,8 +36,10 @@ public class GuiManager {
      * A managing class to handle all of the guis and components being used in the game
      */
     public GuiManager(){
-        guis = new CopyOnWriteArrayList<>();
+        guis = new HashMap<>();
         guiHash = new HashMap<>();
+        worldFrameBuffer = new FrameBuffer(Config.getInt(CFG_FRAME_WIDTH),Config.getInt(CFG_FRAME_HEIGHT));
+        idFrameBuffer = new FrameBuffer(Config.getInt(CFG_FRAME_WIDTH)/4,Config.getInt(CFG_FRAME_HEIGHT)/4);
         Mouse.addMouseCallback((boolean[] pressed, boolean[] wasPressed, Vector2f lastPos, Vector2f pos, Vector2f[] lastDown)->{
             this.lastPos=this.pos;
             this.pos=pos;
@@ -47,7 +57,19 @@ public class GuiManager {
      * @param gui The gui to be added
      */
     public void addGui(Gui gui){
-        guis.add(gui);
+        addGui(gui, 1);
+    }
+
+    /**
+     * Adds a gui to the render hash
+     *
+     * @param gui The gui to be added
+     * @param layer The layer to render to. Between 0 and 10
+     */
+    public void addGui(Gui gui, int layer){
+        if(!guis.containsKey(layer))
+            guis.put(layer, new CopyOnWriteArrayList<>());
+        guis.get(layer).add(gui);
     }
 
     /**
@@ -57,12 +79,14 @@ public class GuiManager {
      */
     public HashMap<Texture, ArrayList<Gui>> getGuiHash() {
         guiHash.clear();
-        for(Gui gui:guis){
-            Texture texture = gui.getTexture();
-            if(!guiHash.containsKey(texture)){
-                guiHash.put(texture, new ArrayList<>());
+        for(CopyOnWriteArrayList<Gui> guiLayer : guis.values()) {
+            for (Gui gui : guiLayer) {
+                Texture texture = gui.getTexture();
+                if (!guiHash.containsKey(texture)) {
+                    guiHash.put(texture, new ArrayList<>());
+                }
+                guiHash.get(texture).add(gui);
             }
-            guiHash.get(texture).add(gui);
         }
         return guiHash;
     }
@@ -71,49 +95,51 @@ public class GuiManager {
      * Handles all of the components of guis and manages their callback methods
      */
     public void handleComponents(){
-        for(Gui gui:guis){
-            for(GuiComponent gc:gui.getComponents()){
-                if(gc instanceof ClickComponent){
-                    ClickComponent clickComponent = (ClickComponent) gc;
-                    if(!pressed[clickComponent.getMouseButton()] && wasPressed[clickComponent.getMouseButton()] &&
-                            Utils.contains(clickComponent, pos) &&
-                            Utils.contains(clickComponent, lastDown[clickComponent.getMouseButton()])){
-                        clickComponent.onClick(pos);
-                    }
-                }else if(gc instanceof HoverComponent){
-                    HoverComponent hoverComponent = (HoverComponent) gc;
-                    if(Utils.contains(hoverComponent, pos)){
-                        hoverComponent.onHover(pos);
-                    }
-                }else if(gc instanceof EnterHoverComponent){
-                    EnterHoverComponent enterHoverComponent = (EnterHoverComponent) gc;
-                    if(!Utils.contains(enterHoverComponent, lastPos) && Utils.contains(enterHoverComponent, pos)) {
-                        enterHoverComponent.onEnterHover(pos, lastPos);
-                    }
-                }else if(gc instanceof ExitHoverComponent){
-                    ExitHoverComponent exitHoverComponent = (ExitHoverComponent) gc;
-                    if(Utils.contains(exitHoverComponent, lastPos) && !Utils.contains(exitHoverComponent, pos)) {
-                        exitHoverComponent.onExitHover(pos, lastPos);
-                    }
-                }else if(gc instanceof MousePressedComponent){
-                    MousePressedComponent mousePressedComponent = (MousePressedComponent) gc;
-                    if(pressed[mousePressedComponent.getMouseButton()] && Utils.contains(mousePressedComponent, pos)){
-                        mousePressedComponent.onPressed(pos);
-                    }
-                }else if(gc instanceof MouseReleasedComponent){
-                    MouseReleasedComponent mouseReleasedComponent = (MouseReleasedComponent) gc;
-                    if(!pressed[mouseReleasedComponent.getMouseButton()] && Utils.contains(mouseReleasedComponent, pos)){
-                        mouseReleasedComponent.onReleased(pos);
-                    }
-                }else if(gc instanceof MouseJustPressedComponent){
-                    MouseJustPressedComponent mousePressedComponent = (MouseJustPressedComponent) gc;
-                    if(pressed[mousePressedComponent.getMouseButton()] && !wasPressed[mousePressedComponent.getMouseButton()] && Utils.contains(mousePressedComponent, pos)){
-                        mousePressedComponent.onPressed(pos);
-                    }
-                }else if(gc instanceof MouseJustReleasedComponent){
-                    MouseJustReleasedComponent mouseReleasedComponent = (MouseJustReleasedComponent) gc;
-                    if(!pressed[mouseReleasedComponent.getMouseButton()] && wasPressed[mouseReleasedComponent.getMouseButton()] && Utils.contains(mouseReleasedComponent, pos)){
-                        mouseReleasedComponent.onReleased(pos);
+        for(CopyOnWriteArrayList<Gui> guiLayer : guis.values()){
+            for(Gui gui:guiLayer) {
+                for (GuiComponent gc : gui.getComponents()) {
+                    if (gc instanceof ClickComponent) {
+                        ClickComponent clickComponent = (ClickComponent) gc;
+                        if (!pressed[clickComponent.getMouseButton()] && wasPressed[clickComponent.getMouseButton()] &&
+                                Utils.contains(clickComponent, pos) &&
+                                Utils.contains(clickComponent, lastDown[clickComponent.getMouseButton()])) {
+                            clickComponent.onClick(pos);
+                        }
+                    } else if (gc instanceof HoverComponent) {
+                        HoverComponent hoverComponent = (HoverComponent) gc;
+                        if (Utils.contains(hoverComponent, pos)) {
+                            hoverComponent.onHover(pos);
+                        }
+                    } else if (gc instanceof EnterHoverComponent) {
+                        EnterHoverComponent enterHoverComponent = (EnterHoverComponent) gc;
+                        if (!Utils.contains(enterHoverComponent, lastPos) && Utils.contains(enterHoverComponent, pos)) {
+                            enterHoverComponent.onEnterHover(pos, lastPos);
+                        }
+                    } else if (gc instanceof ExitHoverComponent) {
+                        ExitHoverComponent exitHoverComponent = (ExitHoverComponent) gc;
+                        if (Utils.contains(exitHoverComponent, lastPos) && !Utils.contains(exitHoverComponent, pos)) {
+                            exitHoverComponent.onExitHover(pos, lastPos);
+                        }
+                    } else if (gc instanceof MousePressedComponent) {
+                        MousePressedComponent mousePressedComponent = (MousePressedComponent) gc;
+                        if (pressed[mousePressedComponent.getMouseButton()] && Utils.contains(mousePressedComponent, pos)) {
+                            mousePressedComponent.onPressed(pos);
+                        }
+                    } else if (gc instanceof MouseReleasedComponent) {
+                        MouseReleasedComponent mouseReleasedComponent = (MouseReleasedComponent) gc;
+                        if (!pressed[mouseReleasedComponent.getMouseButton()] && Utils.contains(mouseReleasedComponent, pos)) {
+                            mouseReleasedComponent.onReleased(pos);
+                        }
+                    } else if (gc instanceof MouseJustPressedComponent) {
+                        MouseJustPressedComponent mousePressedComponent = (MouseJustPressedComponent) gc;
+                        if (pressed[mousePressedComponent.getMouseButton()] && !wasPressed[mousePressedComponent.getMouseButton()] && Utils.contains(mousePressedComponent, pos)) {
+                            mousePressedComponent.onPressed(pos);
+                        }
+                    } else if (gc instanceof MouseJustReleasedComponent) {
+                        MouseJustReleasedComponent mouseReleasedComponent = (MouseJustReleasedComponent) gc;
+                        if (!pressed[mouseReleasedComponent.getMouseButton()] && wasPressed[mouseReleasedComponent.getMouseButton()] && Utils.contains(mouseReleasedComponent, pos)) {
+                            mouseReleasedComponent.onReleased(pos);
+                        }
                     }
                 }
             }
@@ -152,7 +178,23 @@ public class GuiManager {
      * @param fontSize The size of the font to be used
      * @return The stringID that will be used to modify this string
      */
-    public int addString(BitmapFont font, String text, float x, float y, float fontSize){
+    public int addString(BitmapFont font, String text, float x, float y, float fontSize) {
+        return addString(font, text, x, y, 1, fontSize);
+    }
+
+
+    /**
+     * Adds a string to the render hash
+     *
+     * @param font The font to use
+     * @param text The text to render
+     * @param x The x position of the lower-left corner of the string
+     * @param y The y position of the lower-left corner of the string
+     * @param z The layer of the string
+     * @param fontSize The size of the font to be used
+     * @return The stringID that will be used to modify this string
+     */
+    public int addString(BitmapFont font, String text, float x, float y, float z, float fontSize){
         float pointer = x;
         float ratio = fontSize/font.getFontSize();
         float yoff=0;
@@ -171,6 +213,7 @@ public class GuiManager {
             characterWithPos.fontSize=fontSize;
             characterWithPos.x=pointer;
             characterWithPos.y=y-yoff+(font.getCharHeight()-font.getChar(c).charH-font.getChar(c).yoff)*ratio;
+            characterWithPos.z=z;
             characterWithPos.character=c;
             characterWithPos.id=stringID;
             fontHash.get(font).add(characterWithPos);
@@ -187,5 +230,13 @@ public class GuiManager {
      */
     public HashMap<BitmapFont, CopyOnWriteArrayList<CharacterWithPos>> getFontHash() {
         return fontHash;
+    }
+
+    public FrameBuffer getWorldFrameBuffer() {
+        return worldFrameBuffer;
+    }
+
+    public FrameBuffer getIDFrameBuffer() {
+        return idFrameBuffer;
     }
 }

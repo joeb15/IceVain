@@ -15,8 +15,13 @@ public class GlobalVars {
     public static final String GAME_NAME = "Ice Vain";
     public static final int VERSION_MAJOR = 0;
     public static final int VERSION_MINOR = 0;
-    public static final int VERSION_MICRO = 5;
+    public static final int VERSION_MICRO = 6;
 
+    /*
+     * A list of different flags for framebuffers
+     */
+    public static final int FRAMEBUFFER_TEXTURE = 0;
+    public static final int FRAMEBUFFER_DEPTH_TEXTURE = 1;
 
     /**
      * A list of socket values

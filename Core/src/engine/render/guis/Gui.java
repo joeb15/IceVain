@@ -17,6 +17,9 @@ public class Gui {
     private Matrix4f transformationMatrix = new Matrix4f();
     private Texture texture;
     private ArrayList<GuiComponent> components = new ArrayList<>();
+    private boolean flipVertical = false;
+    private boolean flipHorizontal = false;
+    private int layer = 1;
 
     /**
      * A class to represent a graphical user interface that the user can interact with in 2D space
@@ -39,8 +42,21 @@ public class Gui {
      */
     private void calculateMatrix() {
         transformationMatrix.identity();
-        transformationMatrix.translate(pos.x, pos.y, 0);
-        transformationMatrix.scale(size.x, size.y, 0);
+        float x = pos.x;
+        float y = pos.y;
+        float w = size.x;
+        float h = size.y;
+
+        if(flipVertical){
+            y+=h;
+            h=-h;
+        }
+        if(flipHorizontal){
+            x+=w;
+            w=-w;
+        }
+        transformationMatrix.translate(x, y, layer);
+        transformationMatrix.scale(w, h, 0);
     }
 
     /**
@@ -133,5 +149,32 @@ public class Gui {
      */
     public void setTexture(Texture texture) {
         this.texture = texture;
+    }
+
+    /**
+     * Flips the vertical drawing of the gui
+     */
+    public void flipVertical() {
+        flipVertical = !flipVertical;
+        calculateMatrix();
+    }
+
+    /**
+     * Sets the layer of the gui
+     *
+     * @param layer The layer to render to
+     */
+    public void setLayer(int layer) {
+        this.layer = layer;
+        calculateMatrix();
+    }
+
+    /**
+     * Gets the rendering layer of the gui
+     *
+     * @return The layer to render the gui on
+     */
+    public int getLayer(){
+        return layer;
     }
 }

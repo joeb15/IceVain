@@ -15,6 +15,8 @@ public class MasterRenderer {
     private FontRenderer fontRenderer;
     private WorldRenderer worldRenderer;
 
+    private GuiManager guiManager;
+
     /**
      * The renderer to render all parts of the game
      *
@@ -27,6 +29,7 @@ public class MasterRenderer {
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
         this.window = window;
+        this.guiManager = guiManager;
         worldRenderer = new WorldRenderer(world, camera);
         renderer = new Renderer(world, camera);
         guiRenderer = new GuiRenderer(guiManager);
@@ -38,9 +41,23 @@ public class MasterRenderer {
      */
     public void render(){
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-        renderer.render();
-        worldRenderer.render();
+
+        guiManager.getWorldFrameBuffer().bind();
+        guiManager.getWorldFrameBuffer().clearBits();
+            glEnable(GL_DEPTH_TEST);
+            worldRenderer.render();
+            renderer.render();
+        guiManager.getWorldFrameBuffer().unbind();
+
+        guiManager.getIDFrameBuffer().bind();
+        guiManager.getIDFrameBuffer().clearBits();
+            renderer.renderEntityIDs();
+            worldRenderer.renderID();
+        guiManager.getIDFrameBuffer().unbind();
+
+        glDisable(GL_CULL_FACE);
         guiRenderer.render();
+        glEnable(GL_CULL_FACE);
         fontRenderer.render();
 
         window.swapBuffers();

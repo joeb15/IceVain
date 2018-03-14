@@ -59,7 +59,7 @@ public class FontRenderer {
                         .translate(bitmapChar.x, bitmapChar.y,0)
                         .scale(bitmapChar.w, bitmapChar.h, 0));
                 shader.loadTransformationMatrix(new Matrix4f()
-                        .translate(characterWithPos.x, characterWithPos.y,0)
+                        .translate(characterWithPos.x, characterWithPos.y,characterWithPos.z)
                         .scale(bitmapChar.charW*characterWithPos.fontSize/font.getFontSize(), bitmapChar.charH*characterWithPos.fontSize/font.getFontSize(), 0));
                 glDrawElements(GL_TRIANGLES, rawModel.getVertexCount(), GL_UNSIGNED_INT, 0);
             }

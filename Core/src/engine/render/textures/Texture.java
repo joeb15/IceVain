@@ -1,6 +1,8 @@
 package engine.render.textures;
 
+import engine.render.framebuffers.FrameBuffer;
 import engine.utils.Config;
+import engine.utils.Debug;
 import engine.utils.GlobalVars;
 import engine.utils.VFS;
 import org.lwjgl.BufferUtils;
@@ -24,7 +26,7 @@ public class Texture {
     private static ArrayList<Integer> textures = new ArrayList<>();
     private static HashMap<String, Texture> textureHashMap = new HashMap<>();
 
-    private int id, width, height;
+    private int id=0, width, height;
     private String path;
 
     /**
@@ -36,6 +38,28 @@ public class Texture {
         this(VFS.getFile(path));
         this.path = path;
         textureHashMap.put(path, this);
+    }
+
+    /**
+     * Interfaces to a framebuffer texture
+     *
+     * @param frameBuffer The framebuffer to use as a gui
+     * @param textureFlag The texture to use: <code>GlobalVars.FRAMEBUFFER_TEXTURE</code> or <code>GlobalVars.FRAMEBUFFER_DEPTH_TEXTURE</code>
+     */
+    public Texture(FrameBuffer frameBuffer, int textureFlag){
+        switch (textureFlag) {
+            case GlobalVars.FRAMEBUFFER_TEXTURE:
+                id = frameBuffer.getTexture();
+                break;
+            case GlobalVars.FRAMEBUFFER_DEPTH_TEXTURE:
+                id = frameBuffer.getDepthTexture();
+                break;
+            default:
+                Debug.error("While creating a framebuffer gui, an invalid texture flag was used: " + textureFlag);
+                break;
+        }
+        this.width=frameBuffer.getWidth();
+        this.height=frameBuffer.getHeight();
     }
 
     /**

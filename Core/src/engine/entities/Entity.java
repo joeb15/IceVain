@@ -10,6 +10,8 @@ public class Entity {
     private TexturedModel texturedModel;
     private Vector3f pos, rot, scl;
     private Matrix4f transformationMatrix;
+    public final int id;
+    private static int currEntityID=1;
 
     /**
      * Creates an instance to represent an entity within the rendering engine
@@ -23,6 +25,7 @@ public class Entity {
         this.pos = pos;
         this.rot = rot;
         this.scl = scl;
+        this.id = currEntityID++;
         this.texturedModel = texturedModel;
         recalculateTransformationMatrix();
     }

@@ -134,4 +134,18 @@ public class World {
     public MaterialLibrary getMaterialLibrary() {
         return materialLibrary;
     }
+
+    /**
+     * Gets an entity given its ID value
+     *
+     * @param id The id of the entity
+     * @return The Entity associated with that ID
+     */
+    public Entity getEntity(int id) {
+        for(Entity e:entities){
+            if(e.id==id)
+                return e;
+        }
+        return null;
+    }
 }

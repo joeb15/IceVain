@@ -11,6 +11,7 @@ public class Timer {
     private int numLoops;
     private long next;
     private double delta;
+    private boolean destroy = false;
 
     /**
      * Creates a timer
@@ -59,11 +60,16 @@ public class Timer {
             delta=move%1;
             next += (int)move;
             timerInterface.timerCall();
-            if(numLoops>0)
+            if(numLoops==0)
+                timers.remove(this);
+            if(numLoops>0) {
                 numLoops--;
+            }
             if(millis==0)
                 break;
         }
+        if(numLoops==0)
+            timers.remove(this);
     }
 
     /**

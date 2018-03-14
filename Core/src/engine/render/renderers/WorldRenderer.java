@@ -1,6 +1,7 @@
 package engine.render.renderers;
 
 import engine.render.models.RawModel;
+import engine.render.shaders.IDShader;
 import engine.render.shaders.WorldShader;
 import engine.utils.Camera;
 import engine.world.Chunk;
@@ -16,6 +17,7 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 public class WorldRenderer {
 
     private WorldShader shader;
+    private IDShader idShader;
     private Camera camera;
     private World world;
 
@@ -28,10 +30,14 @@ public class WorldRenderer {
     public WorldRenderer(World world, Camera camera){
         this.camera = camera;
         shader = new WorldShader();
+        idShader = new IDShader();
         shader.bind();
         shader.loadProjectionMatrix(camera);
         shader.loadTexture();
         shader.unbind();
+        idShader.bind();
+        idShader.loadProjectionMatrix(camera);
+        idShader.unbind();
         this.world=world;
     }
 
@@ -42,6 +48,18 @@ public class WorldRenderer {
         prepare();
         renderWorld();
         shader.unbind();
+    }
+
+    /**
+     * Renders the world and entities
+     */
+    public void renderID(){
+        idShader.bind();
+        idShader.loadViewMatrix(camera);
+        idShader.loadTransformationMatrix(new Matrix4f());
+        idShader.loadColor(new Vector3f(0,0,0));
+        renderWorldID();
+        idShader.unbind();
     }
 
     /**
@@ -82,10 +100,36 @@ public class WorldRenderer {
     }
 
     /**
+     * Renders the world
+     */
+    public void renderWorldID(){
+        for(int i=0;i<10;i++){
+            for(int j=0;j<10;j++) {
+                Chunk chunk = world.getChunk(i, j);
+                if(chunk!=null) {
+                    RawModel rawModel = chunk.getModel();
+                    glBindVertexArray(rawModel.getVaoId());
+
+                    for (int c : shader.attribs)
+                        glEnableVertexAttribArray(c);
+
+                    glDrawElements(GL_TRIANGLES, rawModel.getVertexCount(), GL_UNSIGNED_INT, 0);
+
+                    for (int c : shader.attribs)
+                        glDisableVertexAttribArray(c);
+
+                    glBindVertexArray(0);
+                }
+            }
+        }
+    }
+
+    /**
      * Frees all previously allocated memory
      */
     public void cleanUp(){
         shader.cleanUp();
+        idShader.cleanUp();
     }
 
 }
