@@ -16,12 +16,50 @@ public class Camera {
     private Vector3f negatedPos = new Vector3f();
     private static final float degToRad = 0.017453293f;
 
+    private float savedPitch=0f, savedYaw=0f, savedRoll=0f;
+    private Vector3f savedPos = null;
+    private Matrix4f savedProj = null;
+
     /**
      * Creates a camera instance to keep track of the players view
      */
     public Camera(){
-        projection = new Matrix4f().perspective(70, 1280f/720f, 1f, 1000f);
+        this(70, 1280/720f);
+    }
+
+    /**
+     * Creates a camera instance to keep track of the players view
+     *
+     * @param fov The fov angle to have as the perspective
+     * @param aspect The aspect ratio to render the world to
+     */
+    public Camera(float fov, float aspect){
+        projection = new Matrix4f().perspective(fov, aspect, 1f, 1000f);
         position = new Vector3f();
+    }
+
+    /**
+     * Saves the current camera state to recall later
+     */
+    public void saveState(){
+        savedProj = new Matrix4f(projection);
+        savedPos = new Vector3f(position);
+        savedPitch = pitch;
+        savedRoll = roll;
+        savedYaw = yaw;
+    }
+
+    /**
+     * Recalls the previously saved state
+     */
+    public void recallState(){
+        if(savedPos==null || savedProj==null)
+            return;
+        projection = new Matrix4f(savedProj);
+        position = new Vector3f(savedPos);
+        pitch = savedPitch;
+        roll = savedRoll;
+        yaw = savedYaw;
     }
 
     /**
@@ -32,6 +70,16 @@ public class Camera {
      */
     public void move(float x, float y, float z){
         position.add(x, y, z);
+    }
+
+    /**
+     * Sets the projection matrix to use a new fov
+     *
+     * @param fov The fov to use
+     * @param aspect The aspect ratio of the camera
+     */
+    public void setProjection(float fov, float aspect){
+        projection = new Matrix4f().perspective(fov, aspect, 1f, 1000f);
     }
 
     /**

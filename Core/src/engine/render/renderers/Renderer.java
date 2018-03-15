@@ -4,7 +4,6 @@ import engine.entities.Entity;
 import engine.render.models.RawModel;
 import engine.render.models.TexturedModel;
 import engine.render.shaders.DefaultShader;
-import engine.render.shaders.IDShader;
 import engine.utils.Camera;
 import engine.world.World;
 import org.joml.Vector3f;
@@ -21,7 +20,6 @@ public class Renderer {
 
     private HashMap<TexturedModel, ArrayList<Entity>> entityHashMap = new HashMap<>();
     private DefaultShader shader;
-    private IDShader idShader;
     private Camera camera;
     private World world;
 
@@ -34,14 +32,6 @@ public class Renderer {
     public Renderer(World world, Camera camera){
         this.camera = camera;
         shader = new DefaultShader();
-        shader.bind();
-        shader.loadProjectionMatrix(camera);
-        shader.loadTexture();
-        shader.unbind();
-        idShader = new IDShader();
-        idShader.bind();
-        idShader.loadProjectionMatrix(camera);
-        idShader.unbind();
         this.world=world;
     }
 
@@ -62,9 +52,10 @@ public class Renderer {
         for(Entity e:world.getEntities())
             addEntity(e);
         shader.bind();
+        shader.loadProjectionMatrix(camera);
+        shader.loadTexture();
         shader.loadViewMatrix(camera);
         shader.loadAmbient(new Vector3f(.1f,.1f,.1f));
-        shader.loadLights(world.getLights());
     }
 
     /**
@@ -88,7 +79,6 @@ public class Renderer {
             glBindVertexArray(model.getVaoId());
             for(int i:shader.attribs)
                 glEnableVertexAttribArray(i);
-            shader.loadMaterialLibrary(texturedModel.getMaterialLibrary());
             for(Entity entity:entityHashMap.get(texturedModel)) {
                 shader.loadTransformationMatrix(entity.getTransformationMatrix());
                 glDrawElements(GL_TRIANGLES, model.getVertexCount(), GL_UNSIGNED_INT, 0);
@@ -101,34 +91,10 @@ public class Renderer {
     }
 
     /**
-     * Renders the entities
-     */
-    public void renderEntityIDs(){
-        idShader.bind();
-        idShader.loadViewMatrix(camera);
-        for(TexturedModel texturedModel : entityHashMap.keySet()){
-            RawModel model = texturedModel.getModel();
-            glBindVertexArray(model.getVaoId());
-            for(int i:idShader.attribs)
-                glEnableVertexAttribArray(i);
-            for(Entity entity:entityHashMap.get(texturedModel)) {
-                idShader.loadTransformationMatrix(entity.getTransformationMatrix());
-                idShader.loadColor(new Vector3f((float)(entity.id%256)/255, (float)(entity.id/256%256)/255, (float)(entity.id/256/256%256)/255));
-                glDrawElements(GL_TRIANGLES, model.getVertexCount(), GL_UNSIGNED_INT, 0);
-            }
-            for(int i:idShader.attribs)
-                glDisableVertexAttribArray(i);
-            glBindVertexArray(0);
-        }
-        idShader.unbind();
-    }
-
-    /**
      * Frees all previously allocated memory
      */
     public void cleanUp(){
         shader.cleanUp();
-        idShader.cleanUp();
     }
 
 }

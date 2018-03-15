@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="IceVainClient">
+    <output-path>$PROJECT_DIR$/out/artifacts/IceVainClient</output-path>
+    <root id="archive" name="IceVainClient.jar">
+      <element id="module-output" name="Client" />
+      <element id="library" level="application" name="jars" />
+      <element id="module-output" name="Core" />
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+      </element>
+    </root>
+  </artifact>
+</component>

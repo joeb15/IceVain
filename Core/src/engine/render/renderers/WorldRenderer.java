@@ -1,14 +1,15 @@
 package engine.render.renderers;
 
-import engine.render.models.RawModel;
-import engine.render.shaders.IDShader;
 import engine.render.shaders.WorldShader;
+import engine.render.textures.Texture;
 import engine.utils.Camera;
 import engine.world.Chunk;
 import engine.world.World;
-import org.joml.Matrix4f;
+import engine.world.blocks.Block;
 import org.joml.Vector3f;
 
+import static engine.world.Chunk.CHUNK_HEIGHT;
+import static engine.world.Chunk.CHUNK_SIZE;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
@@ -17,7 +18,6 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 public class WorldRenderer {
 
     private WorldShader shader;
-    private IDShader idShader;
     private Camera camera;
     private World world;
 
@@ -30,14 +30,6 @@ public class WorldRenderer {
     public WorldRenderer(World world, Camera camera){
         this.camera = camera;
         shader = new WorldShader();
-        idShader = new IDShader();
-        shader.bind();
-        shader.loadProjectionMatrix(camera);
-        shader.loadTexture();
-        shader.unbind();
-        idShader.bind();
-        idShader.loadProjectionMatrix(camera);
-        idShader.unbind();
         this.world=world;
     }
 
@@ -51,77 +43,45 @@ public class WorldRenderer {
     }
 
     /**
-     * Renders the world and entities
-     */
-    public void renderID(){
-        idShader.bind();
-        idShader.loadViewMatrix(camera);
-        idShader.loadTransformationMatrix(new Matrix4f());
-        idShader.loadColor(new Vector3f(0,0,0));
-        renderWorldID();
-        idShader.unbind();
-    }
-
-    /**
      * Prepares the shader and entity hash for rendering
      */
     public void prepare(){
         shader.bind();
+        shader.loadTexture();
+        shader.loadProjectionMatrix(camera);
         shader.loadViewMatrix(camera);
         shader.loadAmbient(new Vector3f(.1f,.1f,.1f));
-        shader.loadLights(world.getLights());
     }
 
     /**
      * Renders the world
      */
     public void renderWorld(){
-        shader.loadTransformationMatrix(new Matrix4f());
-        shader.loadMaterialLibrary(world.getMaterialLibrary());
-        for(int i=0;i<10;i++){
-            for(int j=0;j<10;j++) {
-                Chunk chunk = world.getChunk(i, j);
-                if(chunk!=null) {
-                    RawModel rawModel = chunk.getModel();
-                    glBindVertexArray(rawModel.getVaoId());
-
-                    for (int c : shader.attribs)
-                        glEnableVertexAttribArray(c);
-
-                    glDrawElements(GL_TRIANGLES, rawModel.getVertexCount(), GL_UNSIGNED_INT, 0);
-
-                    for (int c : shader.attribs)
-                        glDisableVertexAttribArray(c);
-
-                    glBindVertexArray(0);
+        glBindVertexArray(Block.CUBE_MODEL.getVaoId());
+        Texture.getTexture("/resources/grass.jpg").bind(0);
+        for (int c : shader.attribs)
+            glEnableVertexAttribArray(c);
+        for(int i=-2;i<=2;i++){
+            for(int j=-2;j<=2;j++) {
+                int k=0;
+                Chunk chunk = world.getChunk(i, k, j);
+                if (chunk != null) {
+                    for (int x = 0; x < CHUNK_SIZE; x++) {
+                        for (int z = 0; z < CHUNK_SIZE; z++) {
+                            for (int y = 0; y < CHUNK_HEIGHT; y++) {
+                                if (chunk.shouldRender(x, y, z)) {
+                                    shader.loadPosition(i * CHUNK_SIZE + x, y + k * CHUNK_HEIGHT, j * CHUNK_SIZE + z);
+                                    glDrawElements(GL_TRIANGLES, Block.CUBE_MODEL.getVertexCount(), GL_UNSIGNED_INT, 0);
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
-    }
-
-    /**
-     * Renders the world
-     */
-    public void renderWorldID(){
-        for(int i=0;i<10;i++){
-            for(int j=0;j<10;j++) {
-                Chunk chunk = world.getChunk(i, j);
-                if(chunk!=null) {
-                    RawModel rawModel = chunk.getModel();
-                    glBindVertexArray(rawModel.getVaoId());
-
-                    for (int c : shader.attribs)
-                        glEnableVertexAttribArray(c);
-
-                    glDrawElements(GL_TRIANGLES, rawModel.getVertexCount(), GL_UNSIGNED_INT, 0);
-
-                    for (int c : shader.attribs)
-                        glDisableVertexAttribArray(c);
-
-                    glBindVertexArray(0);
-                }
-            }
-        }
+        for (int c : shader.attribs)
+            glDisableVertexAttribArray(c);
+        glBindVertexArray(0);
     }
 
     /**
@@ -129,7 +89,6 @@ public class WorldRenderer {
      */
     public void cleanUp(){
         shader.cleanUp();
-        idShader.cleanUp();
     }
 
 }
